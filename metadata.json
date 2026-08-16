@@ -1,0 +1,6 @@
+{
+  "name": "Meridian Marketplace",
+  "description": "A modern, responsive online marketplace for buying and selling products with buyer and seller dashboards, payments, messaging, reviews, and admin controls.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,86 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global deny all by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Connection ping test document
+    match /_connection_test/{testId} {
+      allow read, write: if true;
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn() && (isOwner(userId) || resource.data.id == request.auth.uid);
+      allow create: if isOwner(userId) && isValidId(userId);
+      allow update: if isOwner(userId);
+      allow delete: if false;
+    }
+
+    // Products Collection
+    match /products/{productId} {
+      allow read: if true;
+      allow create: if isSignedIn() && isValidId(productId) && incoming().sellerId == request.auth.uid;
+      allow update: if isSignedIn() && (existing().sellerId == request.auth.uid || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['views', 'soldCount', 'inventory', 'rating', 'reviewCount']));
+      allow delete: if isSignedIn() && existing().sellerId == request.auth.uid;
+    }
+
+    // Orders Collection
+    match /orders/{orderId} {
+      allow get: if isSignedIn() && (resource.data.buyerId == request.auth.uid || resource.data.sellerIds.hasAny([request.auth.uid]));
+      allow list: if isSignedIn() && (resource.data.buyerId == request.auth.uid || resource.data.sellerIds.hasAny([request.auth.uid]));
+      allow create: if isSignedIn() && isValidId(orderId) && incoming().buyerId == request.auth.uid;
+      allow update: if isSignedIn() && (existing().buyerId == request.auth.uid || existing().sellerIds.hasAny([request.auth.uid]));
+      allow delete: if false;
+    }
+
+    // Reviews Collection
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isSignedIn() && isValidId(reviewId) && incoming().authorId == request.auth.uid;
+      allow update: if isSignedIn() && (existing().authorId == request.auth.uid || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['helpfulVotes', 'reply']));
+      allow delete: if isSignedIn() && existing().authorId == request.auth.uid;
+    }
+
+    // Messages Collection
+    match /messages/{messageId} {
+      allow read: if isSignedIn() && (resource.data.senderId == request.auth.uid || resource.data.recipientId == request.auth.uid);
+      allow create: if isSignedIn() && isValidId(messageId) && incoming().senderId == request.auth.uid;
+      allow update: if isSignedIn() && (existing().senderId == request.auth.uid || existing().recipientId == request.auth.uid);
+      allow delete: if isSignedIn() && existing().senderId == request.auth.uid;
+    }
+
+    // Conversations Collection
+    match /conversations/{convId} {
+      allow read: if isSignedIn() && resource.data.participantIds.hasAny([request.auth.uid]);
+      allow create: if isSignedIn() && isValidId(convId) && incoming().participantIds.hasAny([request.auth.uid]);
+      allow update: if isSignedIn() && existing().participantIds.hasAny([request.auth.uid]);
+      allow delete: if false;
+    }
+  }
+}

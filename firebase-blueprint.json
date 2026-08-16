@@ -1,0 +1,127 @@
+{
+  "entities": {
+    "users": {
+      "title": "User",
+      "description": "User profile with role, settings, and addresses",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 120 },
+        "avatar": { "type": "string", "maxLength": 500 },
+        "role": { "type": "string", "enum": ["buyer", "seller", "admin"] },
+        "bio": { "type": "string", "maxLength": 500 },
+        "location": { "type": "string", "maxLength": 120 },
+        "joinDate": { "type": "string", "maxLength": 60 },
+        "rating": { "type": "number" },
+        "reviewCount": { "type": "number" },
+        "verified": { "type": "boolean" },
+        "phone": { "type": "string", "maxLength": 30 },
+        "storeName": { "type": "string", "maxLength": 100 },
+        "storeBanner": { "type": "string", "maxLength": 500 },
+        "isSuspended": { "type": "boolean" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "name", "email", "role"]
+    },
+    "products": {
+      "title": "Product",
+      "description": "Marketplace product listing",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 200 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "price": { "type": "number" },
+        "originalPrice": { "type": "number" },
+        "images": { "type": "array" },
+        "categoryId": { "type": "string", "maxLength": 64 },
+        "subcategory": { "type": "string", "maxLength": 64 },
+        "sellerId": { "type": "string", "maxLength": 128 },
+        "sellerName": { "type": "string", "maxLength": 100 },
+        "condition": { "type": "string", "enum": ["brand_new", "like_new", "good", "fair", "refurbished"] },
+        "status": { "type": "string", "enum": ["active", "draft", "paused", "sold", "inactive"] },
+        "inventory": { "type": "number" },
+        "views": { "type": "number" },
+        "rating": { "type": "number" },
+        "reviewCount": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "title", "price", "sellerId", "categoryId", "condition", "status"]
+    },
+    "orders": {
+      "title": "Order",
+      "description": "Marketplace order record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "buyerId": { "type": "string", "maxLength": 128 },
+        "sellerIds": { "type": "array" },
+        "items": { "type": "array" },
+        "subtotal": { "type": "number" },
+        "shippingCost": { "type": "number" },
+        "tax": { "type": "number" },
+        "discount": { "type": "number" },
+        "total": { "type": "number" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "buyerId", "total", "status"]
+    },
+    "reviews": {
+      "title": "Review",
+      "description": "Product review",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "productId": { "type": "string", "maxLength": 128 },
+        "authorId": { "type": "string", "maxLength": 128 },
+        "authorName": { "type": "string", "maxLength": 100 },
+        "rating": { "type": "number" },
+        "title": { "type": "string", "maxLength": 150 },
+        "comment": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "productId", "authorId", "rating", "title", "comment"]
+    },
+    "messages": {
+      "title": "Message",
+      "description": "Chat message between buyers and sellers",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "conversationId": { "type": "string", "maxLength": 128 },
+        "senderId": { "type": "string", "maxLength": 128 },
+        "senderName": { "type": "string", "maxLength": 100 },
+        "text": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string" },
+        "isRead": { "type": "boolean" }
+      },
+      "required": ["id", "conversationId", "senderId", "text"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "users",
+      "description": "User profile information"
+    },
+    "/products/{productId}": {
+      "schema": "products",
+      "description": "Marketplace products listings"
+    },
+    "/orders/{orderId}": {
+      "schema": "orders",
+      "description": "Marketplace orders"
+    },
+    "/reviews/{reviewId}": {
+      "schema": "reviews",
+      "description": "Product reviews"
+    },
+    "/messages/{messageId}": {
+      "schema": "messages",
+      "description": "User chat messages"
+    }
+  }
+}
