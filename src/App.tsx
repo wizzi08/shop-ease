@@ -21,6 +21,7 @@ import { AdminDashboardView } from './views/AdminDashboardView';
 import { UserProfileView } from './views/UserProfileView';
 import { HelpContactView } from './views/HelpContactView';
 import { LegalView } from './views/LegalView';
+import { WelcomeAuthView } from './views/WelcomeAuthView';
 
 const MainContent: React.FC = () => {
   const { currentView, viewParams, isDarkMode } = useMarketplace();
@@ -71,10 +72,22 @@ const MainContent: React.FC = () => {
         return <LegalView type="terms" />;
       case 'privacy':
         return <LegalView type="privacy" />;
+      case 'welcome-auth':
+        return <WelcomeAuthView />;
       default:
         return <HomeView />;
     }
   };
+
+  if (currentView === 'welcome-auth') {
+    return (
+      <div className={`min-h-screen font-sans ${isDarkMode ? 'dark' : ''}`}>
+        <WelcomeAuthView />
+        <ToastContainer />
+        <AuthModal />
+      </div>
+    );
+  }
 
   return (
     <div className={`min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 font-sans transition-colors duration-200 ${isDarkMode ? 'dark' : ''}`}>

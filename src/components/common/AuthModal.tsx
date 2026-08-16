@@ -76,11 +76,6 @@ export const AuthModal: React.FC = () => {
     }
   };
 
-  const handleQuickLogin = (userId: string) => {
-    switchUser(userId);
-    closeAuthModal();
-  };
-
   return (
     <div id="auth-modal" className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="fixed inset-0 bg-zinc-950/60 backdrop-blur-sm transition-opacity" onClick={closeAuthModal} />
@@ -154,42 +149,8 @@ export const AuthModal: React.FC = () => {
           </div>
         </div>
 
-        {/* Quick Demo Logins Bar */}
-        <div className="bg-zinc-50 dark:bg-zinc-800/40 px-6 py-2.5 border-y border-zinc-100 dark:border-zinc-800">
-          <div className="flex items-center justify-between mb-1.5">
-            <p className="text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-              ⚡ Instant Demo Profiles:
-            </p>
-          </div>
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              onClick={() => handleQuickLogin('user-buyer-1')}
-              className="flex items-center gap-1.5 p-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:border-blue-500 text-left transition-all text-xs font-medium text-zinc-800 dark:text-zinc-200 shadow-xs"
-            >
-              <ShoppingBag className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-              <span className="truncate text-[11px]">Buyer Alex</span>
-            </button>
-
-            <button
-              onClick={() => handleQuickLogin('user-seller-1')}
-              className="flex items-center gap-1.5 p-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:border-purple-500 text-left transition-all text-xs font-medium text-zinc-800 dark:text-zinc-200 shadow-xs"
-            >
-              <Store className="w-3.5 h-3.5 text-purple-500 shrink-0" />
-              <span className="truncate text-[11px]">Seller Elena</span>
-            </button>
-
-            <button
-              onClick={() => handleQuickLogin('user-admin-1')}
-              className="flex items-center gap-1.5 p-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:border-amber-500 text-left transition-all text-xs font-medium text-zinc-800 dark:text-zinc-200 shadow-xs"
-            >
-              <Shield className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-              <span className="truncate text-[11px]">Admin Marcus</span>
-            </button>
-          </div>
-        </div>
-
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 pt-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 pt-2">
           {authModalMode === 'signup' && (
             <>
               {/* Account Type Selector */}

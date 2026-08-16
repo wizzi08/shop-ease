@@ -37,6 +37,7 @@ export const SellerDashboardView: React.FC<SellerDashboardViewProps> = ({ tab = 
     updateOrderStatus,
     updateUser,
     navigate,
+    openAuthModal,
     addToast
   } = useMarketplace();
 
@@ -46,12 +47,42 @@ export const SellerDashboardView: React.FC<SellerDashboardViewProps> = ({ tab = 
   const [trackingNumberInput, setTrackingNumberInput] = useState('');
 
   // Store Settings
-  const [storeName, setStoreName] = useState(currentUser?.storeName || 'TechVault Pro');
+  const [storeName, setStoreName] = useState(currentUser?.storeName || 'My Store');
   const [bio, setBio] = useState(currentUser?.bio || '');
   const [location, setLocation] = useState(currentUser?.location || 'San Francisco, CA');
 
+  if (!currentUser) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-24 text-center space-y-5">
+        <div className="w-16 h-16 rounded-3xl bg-purple-50 dark:bg-purple-950/50 border border-purple-200 dark:border-purple-800/60 flex items-center justify-center mx-auto text-purple-600 dark:text-purple-400 shadow-sm">
+          <Store className="w-8 h-8" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">Merchant Portal</h2>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            Sign in to your seller account or register as a merchant to publish listings and manage escrow payouts.
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          <button
+            onClick={() => openAuthModal('signup')}
+            className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow-md shadow-purple-600/20 transition-all"
+          >
+            Open Seller Account
+          </button>
+          <button
+            onClick={() => openAuthModal('login')}
+            className="w-full sm:w-auto px-6 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 text-xs font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-750 transition-all"
+          >
+            Sign In
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   // Seller's specific listings
-  const sellerId = currentUser?.id || 'user-seller-1';
+  const sellerId = currentUser.id;
   const myListings = products.filter(p => p.sellerId === sellerId);
   const filteredListings = myListings.filter(p => {
     if (listingFilter === 'all') return true;

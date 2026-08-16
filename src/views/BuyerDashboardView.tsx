@@ -35,6 +35,7 @@ export const BuyerDashboardView: React.FC<BuyerDashboardViewProps> = ({ tab = 'o
     updateUser,
     cancelOrder,
     navigate,
+    openAuthModal,
     addToast
   } = useMarketplace();
 
@@ -54,14 +55,30 @@ export const BuyerDashboardView: React.FC<BuyerDashboardViewProps> = ({ tab = 'o
 
   if (!currentUser) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center space-y-4">
-        <h2 className="text-xl font-bold">Please sign in to access your buyer dashboard</h2>
-        <button
-          onClick={() => navigate('home')}
-          className="px-5 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold"
-        >
-          Return Home
-        </button>
+      <div className="max-w-md mx-auto px-4 py-24 text-center space-y-5">
+        <div className="w-16 h-16 rounded-3xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/60 flex items-center justify-center mx-auto text-blue-600 dark:text-blue-400 shadow-sm">
+          <ShoppingBag className="w-8 h-8" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">Buyer Account</h2>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            Sign in to view your orders, tracking information, saved wishlist, and personal preferences.
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          <button
+            onClick={() => openAuthModal('login')}
+            className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-md shadow-blue-600/20 transition-all"
+          >
+            Sign In
+          </button>
+          <button
+            onClick={() => openAuthModal('signup')}
+            className="w-full sm:w-auto px-6 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 text-xs font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-750 transition-all"
+          >
+            Create Account
+          </button>
+        </div>
       </div>
     );
   }

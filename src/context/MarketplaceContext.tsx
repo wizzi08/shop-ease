@@ -224,12 +224,24 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
   // Core Data States with localStorage persistence
   const [users, setUsers] = useState<User[]>(() => {
     const saved = localStorage.getItem('meridian_users');
-    return saved ? JSON.parse(saved) : INITIAL_USERS;
+    if (saved) {
+      try {
+        const parsed: User[] = JSON.parse(saved);
+        // Exclude hardcoded legacy default demo users
+        return parsed.filter(u => !u.id.startsWith('user-buyer-') && !u.id.startsWith('user-seller-') && !u.id.startsWith('user-admin-'));
+      } catch (e) {
+        return [];
+      }
+    }
+    return [];
   });
 
   const [currentUserId, setCurrentUserId] = useState<string | null>(() => {
     const saved = localStorage.getItem('meridian_current_user_id');
-    return saved !== null ? saved : 'user-buyer-1'; // Default to demo buyer Alex Rivera
+    if (saved && !saved.startsWith('user-buyer-') && !saved.startsWith('user-seller-') && !saved.startsWith('user-admin-')) {
+      return saved;
+    }
+    return null;
   });
 
   const [products, setProducts] = useState<Product[]>(() => {
@@ -282,7 +294,13 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
   });
 
   // Navigation / View state
-  const [currentView, setCurrentView] = useState<string>('home');
+  const [currentView, setCurrentView] = useState<string>(() => {
+    const savedUserId = localStorage.getItem('meridian_current_user_id');
+    if (savedUserId && !savedUserId.startsWith('user-buyer-') && !savedUserId.startsWith('user-seller-') && !savedUserId.startsWith('user-admin-')) {
+      return 'home';
+    }
+    return 'welcome-auth';
+  });
   const [currentViewParams, setCurrentViewParams] = useState<Record<string, any>>({});
 
   // Filter state
@@ -537,6 +555,7 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const logout = () => {
     signOut(auth).catch(() => {});
     setCurrentUserId(null);
+    setCurrentView('welcome-auth');
     trackEvent('logout');
     addToast('info', 'Logged Out', 'You have been signed out successfully.');
   };
@@ -1127,19 +1146,19 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
   // Reset to default seed data
   const resetToDefaultData = () => {
     localStorage.clear();
-    setUsers(INITIAL_USERS);
-    setCurrentUserId('user-buyer-1');
+    setUsers([]);
+    setCurrentUserId(null);
     setProducts(INITIAL_PRODUCTS);
     setCategories(INITIAL_CATEGORIES);
     setCart([]);
-    setWishlist(['prod-1', 'prod-2']);
-    setOrders(INITIAL_ORDERS);
+    setWishlist([]);
+    setOrders([]);
     setReviews(INITIAL_REVIEWS);
-    setConversations(INITIAL_CONVERSATIONS);
-    setMessages(INITIAL_MESSAGES);
+    setConversations([]);
+    setMessages([]);
     setReports(INITIAL_REPORTS);
     setActiveFilter(defaultFilter);
-    addToast('success', 'Reset Complete', 'Marketplace state restored to fresh sample data.');
+    addToast('success', 'Reset Complete', 'Marketplace session reset to clean state.');
   };
 
   return (

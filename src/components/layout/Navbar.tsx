@@ -21,7 +21,6 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useMarketplace } from '../../context/MarketplaceContext';
-import { QuickDemoSwitcher } from '../common/QuickDemoSwitcher';
 
 export const Navbar: React.FC = () => {
   const {
@@ -115,7 +114,6 @@ export const Navbar: React.FC = () => {
               <span className={`w-1.5 h-1.5 rounded-full ${isFirebaseConnected ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
               <span className="text-zinc-300 font-medium">Firebase: {firebaseProjectId}</span>
             </div>
-            <QuickDemoSwitcher />
             <button
               onClick={() => navigate('help')}
               className="text-zinc-400 hover:text-white transition-colors flex items-center gap-1"

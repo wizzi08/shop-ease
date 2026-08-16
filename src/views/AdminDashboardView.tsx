@@ -342,34 +342,42 @@ export const AdminDashboardView: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
-                {filteredUsers.map(user => (
-                  <tr key={user.id} className="hover:bg-zinc-50/50">
-                    <td className="p-4">
-                      <div className="flex items-center gap-2.5">
-                        <img src={user.avatar} alt="" className="w-8 h-8 rounded-full object-cover" />
-                        <div>
-                          <p className="font-bold text-zinc-900 dark:text-zinc-100">{user.name}</p>
-                          <p className="text-[11px] text-zinc-500">{user.email}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-blue-50 text-blue-700">
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="p-4 text-zinc-600">{user.location}</td>
-                    <td className="p-4">{user.rating.toFixed(2)} ★ ({user.reviewCount})</td>
-                    <td className="p-4 text-right">
-                      <button
-                        onClick={() => navigate('profile', { userId: user.id })}
-                        className="px-3 py-1 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-semibold"
-                      >
-                        Profile
-                      </button>
+                {filteredUsers.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="p-8 text-center text-zinc-500">
+                      No registered users found yet. Newly created accounts will appear here.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  filteredUsers.map(user => (
+                    <tr key={user.id} className="hover:bg-zinc-50/50">
+                      <td className="p-4">
+                        <div className="flex items-center gap-2.5">
+                          <img src={user.avatar} alt="" className="w-8 h-8 rounded-full object-cover" />
+                          <div>
+                            <p className="font-bold text-zinc-900 dark:text-zinc-100">{user.name}</p>
+                            <p className="text-[11px] text-zinc-500">{user.email}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-blue-50 text-blue-700">
+                          {user.role}
+                        </span>
+                      </td>
+                      <td className="p-4 text-zinc-600">{user.location}</td>
+                      <td className="p-4">{user.rating.toFixed(2)} ★ ({user.reviewCount})</td>
+                      <td className="p-4 text-right">
+                        <button
+                          onClick={() => navigate('profile', { userId: user.id })}
+                          className="px-3 py-1 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-semibold"
+                        >
+                          Profile
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

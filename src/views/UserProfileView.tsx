@@ -18,9 +18,43 @@ interface UserProfileViewProps {
 }
 
 export const UserProfileView: React.FC<UserProfileViewProps> = ({ userId }) => {
-  const { users, products, reviews, startConversationWithSeller, navigate } = useMarketplace();
+  const { currentUser, users, products, reviews, startConversationWithSeller, navigate } = useMarketplace();
 
-  const user = users.find(u => u.id === userId) || users[0];
+  let user = users.find(u => u.id === userId);
+  if (!user && currentUser && currentUser.id === userId) {
+    user = currentUser;
+  }
+  if (!user) {
+    const sampleProduct = products.find(p => p.sellerId === userId);
+    if (sampleProduct) {
+      user = {
+        id: sampleProduct.sellerId,
+        name: sampleProduct.sellerName,
+        storeName: sampleProduct.sellerName,
+        email: `${sampleProduct.sellerName.toLowerCase().replace(/\s+/g, '')}@store.meridian`,
+        avatar: sampleProduct.sellerAvatar,
+        role: 'seller',
+        bio: `Verified merchant for ${sampleProduct.sellerName} on Meridian Marketplace.`,
+        location: sampleProduct.location,
+        joinDate: 'Verified Merchant',
+        rating: sampleProduct.sellerRating,
+        reviewCount: sampleProduct.reviewCount,
+        verified: sampleProduct.sellerVerified,
+        settings: {
+          emailNotifications: true,
+          orderUpdates: true,
+          priceAlerts: false,
+          marketingEmails: false,
+          twoFactorAuth: true,
+          currency: 'USD'
+        },
+        addresses: [],
+        paymentMethods: [],
+        balance: { available: 0, pending: 0 },
+        isSuspended: false
+      };
+    }
+  }
   const userProducts = products.filter(p => p.sellerId === user?.id && p.status === 'active');
   const userReviews = reviews.filter(r => r.sellerId === user?.id);
 
