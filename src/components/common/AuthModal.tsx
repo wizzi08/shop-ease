@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { X, Mail, Lock, User as UserIcon, Store, ShoppingBag, Shield, ArrowRight, Flame } from 'lucide-react';
+import { X, Mail, Lock, User as UserIcon, Store, ShoppingBag, Shield, ArrowRight, Flame, HelpCircle } from 'lucide-react';
 import { useMarketplace } from '../../context/MarketplaceContext';
+import { DomainAuthNotice } from './DomainAuthNotice';
 
 export const AuthModal: React.FC = () => {
   const {
@@ -17,7 +18,8 @@ export const AuthModal: React.FC = () => {
     switchUser,
     addToast,
     isFirebaseConnected,
-    firebaseProjectId
+    firebaseProjectId,
+    domainAuthError
   } = useMarketplace();
 
   const [email, setEmail] = useState('');
@@ -27,6 +29,7 @@ export const AuthModal: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<'buyer' | 'seller'>('buyer');
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [showDomainHelp, setShowDomainHelp] = useState(false);
 
   if (!isAuthModalOpen) return null;
 
@@ -140,6 +143,25 @@ export const AuthModal: React.FC = () => {
               </>
             )}
           </button>
+
+          {/* Domain Auth Notice / Step Instructions */}
+          {(domainAuthError || showDomainHelp) && (
+            <div className="mt-3">
+              <DomainAuthNotice onDismiss={() => setShowDomainHelp(false)} />
+            </div>
+          )}
+
+          <div className="flex items-center justify-between text-[11px] text-zinc-400 mt-2 px-1">
+            <span>Firebase 1-Click Auth</span>
+            <button
+              type="button"
+              onClick={() => setShowDomainHelp(prev => !prev)}
+              className="text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1 cursor-pointer"
+            >
+              <HelpCircle className="w-3 h-3" />
+              <span>Domain setup info</span>
+            </button>
+          </div>
 
           <div className="relative my-4 flex items-center justify-center">
             <div className="border-t border-zinc-200 dark:border-zinc-800 w-full" />

@@ -11,9 +11,11 @@ import {
   Sparkles,
   Sun,
   Moon,
-  CheckCircle2
+  CheckCircle2,
+  HelpCircle
 } from 'lucide-react';
 import { useMarketplace } from '../context/MarketplaceContext';
+import { DomainAuthNotice } from '../components/common/DomainAuthNotice';
 
 export const WelcomeAuthView: React.FC = () => {
   const {
@@ -26,8 +28,11 @@ export const WelcomeAuthView: React.FC = () => {
     isDarkMode,
     toggleTheme,
     isFirebaseConnected,
-    firebaseProjectId
+    firebaseProjectId,
+    domainAuthError
   } = useMarketplace();
+
+  const [showDomainHelp, setShowDomainHelp] = useState(false);
 
   const [mode, setMode] = useState<'login' | 'signup' | 'forgot_password'>('login');
   const [email, setEmail] = useState('');
@@ -269,6 +274,23 @@ export const WelcomeAuthView: React.FC = () => {
                     </>
                   )}
                 </button>
+
+                {/* Domain Auth Notice / Instructions */}
+                {(domainAuthError || showDomainHelp) && (
+                  <DomainAuthNotice onDismiss={() => setShowDomainHelp(false)} />
+                )}
+
+                <div className="flex items-center justify-between text-[11px] text-zinc-400 px-1">
+                  <span>Firebase Google Auth</span>
+                  <button
+                    type="button"
+                    onClick={() => setShowDomainHelp(prev => !prev)}
+                    className="text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1 cursor-pointer"
+                  >
+                    <HelpCircle className="w-3 h-3" />
+                    <span>Domain setup help</span>
+                  </button>
+                </div>
 
                 <div className="relative flex items-center justify-center">
                   <div className="border-t border-zinc-200 dark:border-zinc-800 w-full" />

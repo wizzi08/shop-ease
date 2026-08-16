@@ -60,6 +60,8 @@ export interface MarketplaceContextType {
   // Firebase
   isFirebaseConnected: boolean;
   firebaseProjectId: string;
+  domainAuthError: string | null;
+  clearDomainAuthError: () => void;
   loginWithGoogle: () => Promise<boolean>;
   loginWithEmail: (email: string, password: string) => Promise<boolean>;
   signupWithEmail: (email: string, password: string, userData: Partial<User>, role: 'buyer' | 'seller') => Promise<boolean>;
@@ -404,8 +406,11 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   // Auth Functions
+  const [domainAuthError, setDomainAuthError] = useState<string | null>(null);
+
   const loginWithGoogle = async (): Promise<boolean> => {
     try {
+      setDomainAuthError(null);
       const result = await signInWithPopup(auth, googleProvider);
       const fbUser = result.user;
       trackEvent('login', { method: 'google' });
@@ -414,7 +419,19 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
       return true;
     } catch (error: any) {
       console.error('Google Sign-In Error:', error);
-      addToast('error', 'Google Sign-In Error', error.message || 'Failed to authenticate with Google');
+      if (error?.code === 'auth/unauthorized-domain' || error?.message?.includes('unauthorized-domain')) {
+        const currentHostname = typeof window !== 'undefined' ? window.location.hostname : 'current domain';
+        setDomainAuthError(currentHostname);
+        addToast(
+          'warning',
+          'Domain Authorization Needed',
+          `Google Sign-In requires adding "${currentHostname}" to your Firebase Console Authorized Domains. You can use Email/Password to sign in or register instantly!`
+        );
+      } else if (error?.code === 'auth/popup-closed-by-user') {
+        addToast('info', 'Sign-In Cancelled', 'The Google sign-in window was closed.');
+      } else {
+        addToast('error', 'Google Sign-In Error', error.message || 'Failed to authenticate with Google');
+      }
       return false;
     }
   };
@@ -1168,6 +1185,8 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
         toggleTheme,
         isFirebaseConnected,
         firebaseProjectId,
+        domainAuthError,
+        clearDomainAuthError: () => setDomainAuthError(null),
         loginWithGoogle,
         loginWithEmail,
         signupWithEmail,
