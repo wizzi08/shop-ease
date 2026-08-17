@@ -19,6 +19,7 @@ import { CreateEditListingView } from './views/CreateEditListingView';
 import { MessagingView } from './views/MessagingView';
 import { AdminDashboardView } from './views/AdminDashboardView';
 import { UserProfileView } from './views/UserProfileView';
+import { AccountSettingsView } from './views/AccountSettingsView';
 import { HelpContactView } from './views/HelpContactView';
 import { LegalView } from './views/LegalView';
 import { WelcomeAuthView } from './views/WelcomeAuthView';
@@ -66,6 +67,11 @@ const MainContent: React.FC = () => {
         return <AdminDashboardView />;
       case 'profile':
         return <UserProfileView userId={viewParams?.userId || 'user-seller-1'} />;
+      case 'settings':
+      case 'account':
+      case 'account-settings':
+      case 'my-account':
+        return <AccountSettingsView />;
       case 'help':
         return <HelpContactView section={viewParams?.section} />;
       case 'terms':

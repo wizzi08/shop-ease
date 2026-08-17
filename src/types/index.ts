@@ -76,13 +76,19 @@ export interface User {
   bio?: string;
   location: string;
   joinDate: string;
+  createdAt?: string;
   rating: number;
   reviewCount: number;
   verified: boolean;
+  isVerified?: boolean;
   phone?: string;
   storeName?: string;
   storeBanner?: string;
   settings: UserSettings;
+  notificationPreferences?: {
+    orderUpdates?: boolean;
+    promotions?: boolean;
+  };
   addresses: UserAddress[];
   paymentMethods: UserPaymentMethod[];
   balance: {

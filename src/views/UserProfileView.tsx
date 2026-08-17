@@ -95,19 +95,19 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({ userId }) => {
                   <h1 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-zinc-100">
                     {user.storeName || user.name}
                   </h1>
-                  {user.isVerified && (
+                  {(user.isVerified || user.verified) && (
                     <CheckCircle className="w-5 h-5 text-blue-500 shrink-0" />
                   )}
                 </div>
                 <p className="text-xs text-zinc-500 flex items-center gap-3">
                   <span className="flex items-center gap-1">
                     <MapPin className="w-3.5 h-3.5" />
-                    {user.location}
+                    {user.location || 'United States'}
                   </span>
                   <span>•</span>
                   <span className="flex items-center gap-1">
                     <Calendar className="w-3.5 h-3.5" />
-                    Member since {new Date(user.createdAt).getFullYear()}
+                    Member since {user.joinDate || (user.createdAt ? new Date(user.createdAt).getFullYear() : '2026')}
                   </span>
                 </p>
               </div>
@@ -145,8 +145,8 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({ userId }) => {
                 <span className="text-zinc-500">Merchant Rating</span>
                 <div className="flex items-center gap-1 font-bold text-zinc-900 dark:text-zinc-100">
                   <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                  <span>{user.rating.toFixed(2)}</span>
-                  <span className="text-zinc-400 font-normal">({user.reviewCount})</span>
+                  <span>{(user.rating || 5.0).toFixed(2)}</span>
+                  <span className="text-zinc-400 font-normal">({user.reviewCount || 0})</span>
                 </div>
               </div>
 

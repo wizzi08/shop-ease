@@ -43,15 +43,35 @@ export const BuyerDashboardView: React.FC<BuyerDashboardViewProps> = ({ tab = 'o
   const [orderStatusFilter, setOrderStatusFilter] = useState<string>('all');
   const [reviewModalProduct, setReviewModalProduct] = useState<Product | null>(null);
 
+  // Sync active tab when navigation prop changes
+  React.useEffect(() => {
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, [tab]);
+
   // Settings form state
   const [name, setName] = useState(currentUser?.name || '');
   const [location, setLocation] = useState(currentUser?.location || '');
   const [emailNotifications, setEmailNotifications] = useState(
-    currentUser?.notificationPreferences.orderUpdates ?? true
+    currentUser?.notificationPreferences?.orderUpdates ?? currentUser?.settings?.orderUpdates ?? true
   );
   const [promoNotifications, setPromoNotifications] = useState(
-    currentUser?.notificationPreferences.promotions ?? false
+    currentUser?.notificationPreferences?.promotions ?? currentUser?.settings?.marketingEmails ?? false
   );
+
+  React.useEffect(() => {
+    if (currentUser) {
+      setName(currentUser.name || '');
+      setLocation(currentUser.location || '');
+      setEmailNotifications(
+        currentUser.notificationPreferences?.orderUpdates ?? currentUser.settings?.orderUpdates ?? true
+      );
+      setPromoNotifications(
+        currentUser.notificationPreferences?.promotions ?? currentUser.settings?.marketingEmails ?? false
+      );
+    }
+  }, [currentUser]);
 
   if (!currentUser) {
     return (
@@ -102,13 +122,30 @@ export const BuyerDashboardView: React.FC<BuyerDashboardViewProps> = ({ tab = 'o
       name,
       location,
       notificationPreferences: {
-        ...currentUser.notificationPreferences,
         orderUpdates: emailNotifications,
         promotions: promoNotifications
+      },
+      settings: {
+        ...(currentUser.settings || {
+          emailNotifications: true,
+          orderUpdates: true,
+          priceAlerts: true,
+          marketingEmails: false,
+          twoFactorAuth: false,
+          currency: 'USD'
+        }),
+        orderUpdates: emailNotifications,
+        marketingEmails: promoNotifications
       }
     });
     addToast('success', 'Profile Updated', 'Your personal account preferences have been saved.');
   };
+
+  const memberSinceText = currentUser.joinDate
+    ? currentUser.joinDate
+    : currentUser.createdAt
+    ? new Date(currentUser.createdAt).toLocaleDateString()
+    : '2026';
 
   return (
     <div id="buyer-dashboard" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
@@ -128,7 +165,7 @@ export const BuyerDashboardView: React.FC<BuyerDashboardViewProps> = ({ tab = 'o
               </span>
             </div>
             <p className="text-xs text-blue-100 mt-0.5">
-              {currentUser.email} • Member since {new Date(currentUser.createdAt).toLocaleDateString()}
+              {currentUser.email} • Member since {memberSinceText}
             </p>
           </div>
         </div>

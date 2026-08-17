@@ -46,10 +46,25 @@ export const SellerDashboardView: React.FC<SellerDashboardViewProps> = ({ tab = 
   const [shippingModalOrder, setShippingModalOrder] = useState<string | null>(null);
   const [trackingNumberInput, setTrackingNumberInput] = useState('');
 
+  // Sync active tab with prop
+  React.useEffect(() => {
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, [tab]);
+
   // Store Settings
-  const [storeName, setStoreName] = useState(currentUser?.storeName || 'My Store');
+  const [storeName, setStoreName] = useState(currentUser?.storeName || currentUser?.name || 'My Store');
   const [bio, setBio] = useState(currentUser?.bio || '');
   const [location, setLocation] = useState(currentUser?.location || 'San Francisco, CA');
+
+  React.useEffect(() => {
+    if (currentUser) {
+      setStoreName(currentUser.storeName || currentUser.name || 'My Store');
+      setBio(currentUser.bio || '');
+      setLocation(currentUser.location || 'San Francisco, CA');
+    }
+  }, [currentUser]);
 
   if (!currentUser) {
     return (
@@ -110,7 +125,7 @@ export const SellerDashboardView: React.FC<SellerDashboardViewProps> = ({ tab = 
 
   const handleToggleListingStatus = (product: Product) => {
     const nextStatus: ProductStatus = product.status === 'active' ? 'inactive' : 'active';
-    updateProduct({ ...product, status: nextStatus });
+    updateProduct(product.id, { status: nextStatus });
     addToast(
       'info',
       'Listing Status Changed',

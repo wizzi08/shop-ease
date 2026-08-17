@@ -75,6 +75,7 @@ export interface MarketplaceContextType {
   logout: () => void;
   switchUser: (userId: string) => void;
   updateProfile: (updates: Partial<User>) => void;
+  updateUser: (updates: Partial<User>) => void;
   updateSettings: (settings: Partial<UserSettings>) => void;
   addAddress: (address: Omit<UserAddress, 'id'>) => void;
   removeAddress: (addressId: string) => void;
@@ -1198,6 +1199,7 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
         logout,
         switchUser,
         updateProfile,
+        updateUser: updateProfile,
         updateSettings,
         addAddress,
         removeAddress,
