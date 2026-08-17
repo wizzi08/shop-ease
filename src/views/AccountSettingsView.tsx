@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useMarketplace } from '../context/MarketplaceContext';
 import { UserAddress, UserPaymentMethod } from '../types';
+import { BackButton } from '../components/common/BackButton';
 
 export const AccountSettingsView: React.FC = () => {
   const {
@@ -203,7 +204,12 @@ export const AccountSettingsView: React.FC = () => {
   ];
 
   return (
-    <div id="account-settings-page" className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8 animate-in fade-in duration-200">
+    <div id="account-settings-page" className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-6 animate-in fade-in duration-200">
+      {/* Top Back Navigation */}
+      <div className="flex items-center justify-between">
+        <BackButton variant="pill" label="Back to previous page" fallbackView="home" />
+      </div>
+
       {/* Header Banner */}
       <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div className="flex items-center gap-4">

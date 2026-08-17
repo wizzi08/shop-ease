@@ -11,6 +11,7 @@ import {
   Download
 } from 'lucide-react';
 import { useMarketplace } from '../context/MarketplaceContext';
+import { BackButton } from '../components/common/BackButton';
 
 interface OrderConfirmationViewProps {
   orderId?: string;
@@ -38,7 +39,11 @@ export const OrderConfirmationView: React.FC<OrderConfirmationViewProps> = ({ or
   };
 
   return (
-    <div id="order-confirmation-view" className="max-w-4xl mx-auto px-4 sm:px-6 py-12 space-y-8">
+    <div id="order-confirmation-view" className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+      <div>
+        <BackButton variant="pill" label="Back to Marketplace" fallbackView="browse" />
+      </div>
+
       {/* Header Banner */}
       <div className="text-center space-y-3">
         <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-sm">

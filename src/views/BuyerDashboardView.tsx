@@ -20,6 +20,7 @@ import { useMarketplace } from '../context/MarketplaceContext';
 import { ProductCard } from '../components/common/ProductCard';
 import { ReviewModal } from '../components/common/ReviewModal';
 import { Product } from '../types';
+import { BackButton } from '../components/common/BackButton';
 
 interface BuyerDashboardViewProps {
   tab?: 'orders' | 'wishlist' | 'reviews' | 'settings';
@@ -148,7 +149,11 @@ export const BuyerDashboardView: React.FC<BuyerDashboardViewProps> = ({ tab = 'o
     : '2026';
 
   return (
-    <div id="buyer-dashboard" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+    <div id="buyer-dashboard" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+      <div className="flex items-center justify-between">
+        <BackButton variant="pill" label="Back to previous page" fallbackView="home" />
+      </div>
+
       {/* Buyer Header Banner */}
       <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">

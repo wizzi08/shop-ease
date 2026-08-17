@@ -1,22 +1,16 @@
 import React from 'react';
-import { ShieldCheck, Lock, FileText, ArrowLeft } from 'lucide-react';
+import { ShieldCheck, Lock, FileText } from 'lucide-react';
 import { useMarketplace } from '../context/MarketplaceContext';
+import { BackButton } from '../components/common/BackButton';
 
 interface LegalViewProps {
   type?: 'terms' | 'privacy';
 }
 
 export const LegalView: React.FC<LegalViewProps> = ({ type = 'terms' }) => {
-  const { navigate } = useMarketplace();
-
   return (
     <div id="legal-view" className="max-w-4xl mx-auto px-4 sm:px-6 py-12 space-y-8">
-      <button
-        onClick={() => navigate('home')}
-        className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
-      >
-        <ArrowLeft className="w-4 h-4" /> Back to Home
-      </button>
+      <BackButton variant="pill" label="Back to previous page" fallbackView="home" />
 
       <div className="space-y-3">
         <h1 className="text-3xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, ShoppingBag, Star, CheckCircle, ShieldCheck, MapPin, Eye } from 'lucide-react';
+import { Heart, ShoppingBag, Star, CheckCircle, ShieldCheck, MapPin, Eye, Edit3 } from 'lucide-react';
 import { Product } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';
 
@@ -9,7 +9,8 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode = 'grid' }) => {
-  const { navigate, addToCart, toggleWishlist, isInWishlist } = useMarketplace();
+  const { currentUser, navigate, addToCart, toggleWishlist, isInWishlist } = useMarketplace();
+  const isAdmin = currentUser?.role === 'admin';
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -57,17 +58,32 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode = 'g
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
           />
-          <button
-            onClick={handleToggleWishlist}
-            className={`absolute top-2.5 right-2.5 p-2 rounded-full backdrop-blur-md transition-all ${
-              isFavorited
-                ? 'bg-rose-500 text-white shadow-md'
-                : 'bg-white/80 dark:bg-zinc-900/80 text-zinc-700 dark:text-zinc-300 hover:text-rose-500'
-            }`}
-            aria-label="Save to wishlist"
-          >
-            <Heart className={`w-4 h-4 ${isFavorited ? 'fill-current' : ''}`} />
-          </button>
+          <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 z-10">
+            {isAdmin && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate('edit-listing', { productId: product.id });
+                }}
+                className="p-2 rounded-full bg-blue-600 text-white shadow-md hover:bg-blue-700 transition-colors"
+                title="Admin: Edit Product"
+                aria-label="Admin edit product"
+              >
+                <Edit3 className="w-4 h-4" />
+              </button>
+            )}
+            <button
+              onClick={handleToggleWishlist}
+              className={`p-2 rounded-full backdrop-blur-md transition-all ${
+                isFavorited
+                  ? 'bg-rose-500 text-white shadow-md'
+                  : 'bg-white/80 dark:bg-zinc-900/80 text-zinc-700 dark:text-zinc-300 hover:text-rose-500'
+              }`}
+              aria-label="Save to wishlist"
+            >
+              <Heart className={`w-4 h-4 ${isFavorited ? 'fill-current' : ''}`} />
+            </button>
+          </div>
         </div>
 
         <div className="flex-1 flex flex-col justify-between min-w-0">
@@ -171,18 +187,33 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode = 'g
           )}
         </div>
 
-        {/* Wishlist Button */}
-        <button
-          onClick={handleToggleWishlist}
-          className={`absolute top-2.5 right-2.5 p-2 rounded-full backdrop-blur-md transition-all z-10 ${
-            isFavorited
-              ? 'bg-rose-500 text-white shadow-md'
-              : 'bg-white/85 dark:bg-zinc-900/85 text-zinc-700 dark:text-zinc-300 hover:text-rose-500'
-          }`}
-          aria-label="Save to wishlist"
-        >
-          <Heart className={`w-4 h-4 ${isFavorited ? 'fill-current' : ''}`} />
-        </button>
+        {/* Wishlist and Admin Edit Buttons */}
+        <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 z-10">
+          {isAdmin && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate('edit-listing', { productId: product.id });
+              }}
+              className="p-2 rounded-full bg-blue-600 text-white shadow-md hover:bg-blue-700 transition-colors"
+              title="Admin: Edit Product"
+              aria-label="Admin edit product"
+            >
+              <Edit3 className="w-4 h-4" />
+            </button>
+          )}
+          <button
+            onClick={handleToggleWishlist}
+            className={`p-2 rounded-full backdrop-blur-md transition-all ${
+              isFavorited
+                ? 'bg-rose-500 text-white shadow-md'
+                : 'bg-white/85 dark:bg-zinc-900/85 text-zinc-700 dark:text-zinc-300 hover:text-rose-500'
+            }`}
+            aria-label="Save to wishlist"
+          >
+            <Heart className={`w-4 h-4 ${isFavorited ? 'fill-current' : ''}`} />
+          </button>
+        </div>
 
         {/* Multi-image indicator dots on hover */}
         {product.images.length > 1 && isHovered && (

@@ -12,6 +12,7 @@ import {
   Truck
 } from 'lucide-react';
 import { useMarketplace } from '../context/MarketplaceContext';
+import { BackButton } from '../components/common/BackButton';
 
 export const CartView: React.FC = () => {
   const {
@@ -75,7 +76,11 @@ export const CartView: React.FC = () => {
   }
 
   return (
-    <div id="cart-view" className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+    <div id="cart-view" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+      <div className="flex items-center justify-between">
+        <BackButton variant="pill" label="Back to Shopping" fallbackView="browse" />
+      </div>
+
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">

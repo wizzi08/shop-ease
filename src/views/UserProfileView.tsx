@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useMarketplace } from '../context/MarketplaceContext';
 import { ProductCard } from '../components/common/ProductCard';
+import { BackButton } from '../components/common/BackButton';
 
 interface UserProfileViewProps {
   userId: string;
@@ -73,7 +74,12 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({ userId }) => {
   }
 
   return (
-    <div id="user-profile-view" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+    <div id="user-profile-view" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+      {/* Top Back Navigation */}
+      <div className="flex items-center justify-between">
+        <BackButton variant="pill" label="Back to Previous Page" fallbackView="browse" />
+      </div>
+
       {/* Profile Banner */}
       <div className="relative rounded-3xl overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm">
         {/* Cover / Header backdrop */}

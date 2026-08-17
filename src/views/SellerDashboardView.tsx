@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useMarketplace } from '../context/MarketplaceContext';
 import { Product, ProductStatus } from '../types';
+import { BackButton } from '../components/common/BackButton';
 
 interface SellerDashboardViewProps {
   tab?: 'listings' | 'orders' | 'payouts' | 'store';
@@ -160,7 +161,11 @@ export const SellerDashboardView: React.FC<SellerDashboardViewProps> = ({ tab = 
   };
 
   return (
-    <div id="seller-dashboard" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+    <div id="seller-dashboard" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+      <div className="flex items-center justify-between">
+        <BackButton variant="pill" label="Back to previous page" fallbackView="home" />
+      </div>
+
       {/* Seller Header */}
       <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-zinc-900 via-zinc-900 to-zinc-950 text-white border border-zinc-800 shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">

@@ -84,7 +84,7 @@ export interface MarketplaceContextType {
   // Products
   products: Product[];
   addProduct: (productData: Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'views' | 'rating' | 'reviewCount' | 'soldCount'>) => string;
-  updateProduct: (id: string, productData: Partial<Product>) => void;
+  updateProduct: (idOrProduct: string | Partial<Product>, productData?: Partial<Product>) => void;
   deleteProduct: (id: string) => void;
   toggleProductStatus: (id: string, status: ListingStatus) => void;
   getProduct: (id: string) => Product | undefined;
@@ -171,7 +171,10 @@ export interface MarketplaceContextType {
   // Active View / Page routing
   currentView: string;
   currentViewParams: Record<string, any>;
-  navigate: (view: string, params?: Record<string, any>) => void;
+  navigate: (view: string, params?: Record<string, any>, options?: { replace?: boolean }) => void;
+  goBack: () => void;
+  canGoBack: boolean;
+  navigationHistory: Array<{ view: string; params: Record<string, any> }>;
 
   // Modals & Notifications
   isAuthModalOpen: boolean;
@@ -305,6 +308,7 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     return 'welcome-auth';
   });
   const [currentViewParams, setCurrentViewParams] = useState<Record<string, any>>({});
+  const [navigationHistory, setNavigationHistory] = useState<Array<{ view: string; params: Record<string, any> }>>([]);
 
   // Filter state
   const [activeFilter, setActiveFilter] = useState<FilterState>(defaultFilter);
@@ -325,18 +329,23 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       if (fbUser) {
+        const userEmail = (fbUser.email || '').toLowerCase();
+        const isAdminEmail = userEmail === 'azubuikewisdom638@gmail.com' || userEmail.startsWith('admin@') || userEmail.includes('admin');
         const existing = users.find(
-          u => u.id === fbUser.uid || u.email.toLowerCase() === (fbUser.email || '').toLowerCase()
+          u => u.id === fbUser.uid || u.email.toLowerCase() === userEmail
         );
         if (existing) {
+          if (isAdminEmail && existing.role !== 'admin') {
+            setUsers(prev => prev.map(u => u.id === existing.id ? { ...u, role: 'admin' } : u));
+          }
           setCurrentUserId(existing.id);
         } else {
           const newUser: User = {
             id: fbUser.uid,
-            name: fbUser.displayName || fbUser.email?.split('@')[0] || 'Firebase User',
+            name: fbUser.displayName || fbUser.email?.split('@')[0] || (isAdminEmail ? 'Admin Master' : 'Firebase User'),
             email: fbUser.email || `${fbUser.uid}@shop-net.com`,
             avatar: fbUser.photoURL || `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80`,
-            role: 'buyer',
+            role: isAdminEmail ? 'admin' : 'buyer',
             location: 'United States',
             joinDate: 'Just now',
             rating: 5.0,
@@ -399,11 +408,40 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setToasts(prev => prev.filter(t => t.id !== id));
   };
 
-  // Navigation
-  const navigate = (view: string, params: Record<string, any> = {}) => {
+  // Navigation History and GoBack implementation
+  const canGoBack = navigationHistory.length > 0 || (currentView !== 'home' && currentView !== 'welcome-auth');
+
+  const navigate = (view: string, params: Record<string, any> = {}, options?: { replace?: boolean }) => {
+    // Avoid duplicate pushes
+    if (view === currentView && JSON.stringify(params) === JSON.stringify(currentViewParams)) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (!options?.replace && currentView) {
+      setNavigationHistory(prev => [...prev.slice(-30), { view: currentView, params: currentViewParams }]);
+    }
+
     setCurrentView(view);
     setCurrentViewParams(params);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const goBack = () => {
+    if (navigationHistory.length > 0) {
+      const prevEntry = navigationHistory[navigationHistory.length - 1];
+      setNavigationHistory(prev => prev.slice(0, -1));
+      setCurrentView(prevEntry.view);
+      setCurrentViewParams(prevEntry.params || {});
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // Fallback: If no history exists, return to home
+      if (currentView !== 'home' && currentView !== 'welcome-auth') {
+        setCurrentView('home');
+        setCurrentViewParams({});
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
   };
 
   // Auth Functions
@@ -481,26 +519,31 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   const login = (email: string, _password?: string) => {
-    const existing = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    const userEmail = email.toLowerCase();
+    const isAdminEmail = userEmail === 'azubuikewisdom638@gmail.com' || userEmail.startsWith('admin@') || userEmail.includes('admin');
+    const existing = users.find(u => u.email.toLowerCase() === userEmail);
     if (existing) {
       if (existing.isSuspended) {
         addToast('error', 'Account Suspended', 'This account has been suspended by an administrator.');
         return false;
       }
+      if (isAdminEmail && existing.role !== 'admin') {
+        setUsers(prev => prev.map(u => u.id === existing.id ? { ...u, role: 'admin' } : u));
+      }
       setCurrentUserId(existing.id);
       setIsAuthModalOpen(false);
       trackEvent('login', { method: 'mock_switch', userId: existing.id });
-      addToast('success', 'Welcome Back!', `Logged in as ${existing.name} (${existing.role})`);
+      addToast('success', 'Welcome Back!', `Logged in as ${existing.name} (${isAdminEmail ? 'admin' : existing.role})`);
       return true;
     }
 
-    // If new demo email, auto-create a buyer user
+    // If new demo email, auto-create user (with admin role if admin email)
     const newUser: User = {
       id: `user-${Date.now()}`,
       name: email.split('@')[0].replace('.', ' ').replace(/^\w/, c => c.toUpperCase()),
       email,
       avatar: `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80`,
-      role: 'buyer',
+      role: isAdminEmail ? 'admin' : 'buyer',
       location: 'United States',
       joinDate: 'Just now',
       rating: 5.0,
@@ -529,7 +572,9 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   const signup = (userData: Partial<User>, role: 'buyer' | 'seller') => {
-    const existing = users.find(u => u.email.toLowerCase() === userData.email?.toLowerCase());
+    const userEmail = (userData.email || '').toLowerCase();
+    const isAdminEmail = userEmail === 'azubuikewisdom638@gmail.com' || userEmail.startsWith('admin@') || userEmail.includes('admin');
+    const existing = users.find(u => u.email.toLowerCase() === userEmail);
     if (existing) {
       addToast('error', 'Account Exists', 'An account with this email address already exists. Please log in.');
       return false;
@@ -540,7 +585,7 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
       name: userData.name || 'New User',
       email: userData.email || 'user@example.com',
       avatar: userData.avatar || `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80`,
-      role: role,
+      role: isAdminEmail ? 'admin' : role,
       storeName: role === 'seller' ? userData.storeName || `${userData.name}'s Shop` : undefined,
       storeBanner: role === 'seller' ? 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&auto=format&fit=crop&q=80' : undefined,
       bio: userData.bio || (role === 'seller' ? 'Official seller on Meridian Marketplace.' : 'Marketplace explorer.'),
@@ -641,8 +686,17 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     return newId;
   };
 
-  const updateProduct = (id: string, updates: Partial<Product>) => {
-    setProducts(prev => prev.map(p => (p.id === id ? { ...p, ...updates, updatedAt: new Date().toISOString() } : p)));
+  const updateProduct = (idOrProduct: string | Partial<Product>, updates?: Partial<Product>) => {
+    let id: string;
+    let actualUpdates: Partial<Product>;
+    if (typeof idOrProduct === 'string') {
+      id = idOrProduct;
+      actualUpdates = updates || {};
+    } else {
+      id = (idOrProduct.id as string) || '';
+      actualUpdates = idOrProduct;
+    }
+    setProducts(prev => prev.map(p => (p.id === id ? { ...p, ...actualUpdates, updatedAt: new Date().toISOString() } : p)));
     addToast('success', 'Listing Updated', 'Product listing changes have been saved.');
   };
 
@@ -1260,6 +1314,9 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
         currentView,
         currentViewParams,
         navigate,
+        goBack,
+        canGoBack,
+        navigationHistory,
         isAuthModalOpen,
         authModalMode,
         openAuthModal,

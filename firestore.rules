@@ -16,6 +16,14 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'azubuikewisdom638@gmail.com' ||
+        request.auth.token.email.matches('.*admin.*') ||
+        (request.auth.token.role is string && request.auth.token.role == 'admin')
+      );
+    }
+
     function isValidId(id) {
       return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
     }
@@ -45,9 +53,9 @@ service cloud.firestore {
     // Products Collection
     match /products/{productId} {
       allow read: if true;
-      allow create: if isSignedIn() && isValidId(productId) && incoming().sellerId == request.auth.uid;
-      allow update: if isSignedIn() && (existing().sellerId == request.auth.uid || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['views', 'soldCount', 'inventory', 'rating', 'reviewCount']));
-      allow delete: if isSignedIn() && existing().sellerId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(productId) && (incoming().sellerId == request.auth.uid || isAdmin());
+      allow update: if isSignedIn() && (existing().sellerId == request.auth.uid || isAdmin() || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['views', 'soldCount', 'inventory', 'rating', 'reviewCount']));
+      allow delete: if isSignedIn() && (existing().sellerId == request.auth.uid || isAdmin());
     }
 
     // Orders Collection

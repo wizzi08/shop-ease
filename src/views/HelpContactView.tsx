@@ -12,6 +12,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { useMarketplace } from '../context/MarketplaceContext';
+import { BackButton } from '../components/common/BackButton';
 
 interface HelpContactViewProps {
   section?: string;
@@ -66,7 +67,11 @@ export const HelpContactView: React.FC<HelpContactViewProps> = () => {
   };
 
   return (
-    <div id="help-contact-view" className="max-w-5xl mx-auto px-4 sm:px-6 py-12 space-y-12">
+    <div id="help-contact-view" className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+      <div>
+        <BackButton variant="pill" label="Back to previous page" fallbackView="home" />
+      </div>
+
       {/* Hero Banner */}
       <div className="text-center space-y-3">
         <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">

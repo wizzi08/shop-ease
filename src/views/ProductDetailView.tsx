@@ -3,6 +3,7 @@ import {
   Star,
   CheckCircle,
   ShieldCheck,
+  Shield,
   Truck,
   RotateCcw,
   Heart,
@@ -18,12 +19,16 @@ import {
   Eye,
   ThumbsUp,
   Tag,
-  ArrowRight
+  ArrowRight,
+  Edit3,
+  Trash2
 } from 'lucide-react';
 import { useMarketplace } from '../context/MarketplaceContext';
 import { ProductCard } from '../components/common/ProductCard';
 import { ReviewModal } from '../components/common/ReviewModal';
 import { ReportModal } from '../components/common/ReportModal';
+import { BackButton } from '../components/common/BackButton';
+import { ProductStatus } from '../types';
 
 interface ProductDetailViewProps {
   productId: string;
@@ -31,6 +36,7 @@ interface ProductDetailViewProps {
 
 export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productId }) => {
   const {
+    currentUser,
     getProduct,
     products,
     addToCart,
@@ -40,11 +46,15 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productId 
     voteReviewHelpful,
     startConversationWithSeller,
     incrementProductViews,
+    updateProduct,
+    deleteProduct,
     navigate,
     addToast
   } = useMarketplace();
 
   const product = getProduct(productId) || products[0];
+  const isAdmin = currentUser?.role === 'admin';
+  const isSeller = currentUser?.id === product?.sellerId;
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedShippingId, setSelectedShippingId] = useState(
@@ -114,20 +124,113 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productId 
 
   return (
     <div id="product-detail-view" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-12">
-      {/* Breadcrumb Navigation */}
-      <nav className="flex items-center gap-1.5 text-xs text-zinc-500 overflow-x-auto whitespace-nowrap">
-        <button onClick={() => navigate('home')} className="hover:text-zinc-900 dark:hover:text-zinc-100">
-          Home
-        </button>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <button onClick={() => navigate('browse')} className="hover:text-zinc-900 dark:hover:text-zinc-100">
-          Marketplace
-        </button>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-zinc-900 dark:text-zinc-100 font-medium truncate max-w-xs">
-          {product.title}
-        </span>
-      </nav>
+      {/* Top Navigation Row: Back Button & Breadcrumbs */}
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-3">
+          <BackButton variant="pill" label="Back" fallbackView="browse" />
+          <nav className="flex items-center gap-1.5 text-xs text-zinc-500 overflow-x-auto whitespace-nowrap">
+            <button onClick={() => navigate('home')} className="hover:text-zinc-900 dark:hover:text-zinc-100">
+              Home
+            </button>
+            <ChevronRight className="w-3.5 h-3.5" />
+            <button onClick={() => navigate('browse')} className="hover:text-zinc-900 dark:hover:text-zinc-100">
+              Marketplace
+            </button>
+            <ChevronRight className="w-3.5 h-3.5" />
+            <span className="text-zinc-900 dark:text-zinc-100 font-medium truncate max-w-xs">
+              {product.title}
+            </span>
+          </nav>
+        </div>
+      </div>
+
+      {/* Admin / Seller Moderation Toolbar */}
+      {(isAdmin || isSeller) && (
+        <div className="p-4 rounded-3xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                {isAdmin ? 'Super Admin Product Control' : 'Seller Listing Management'}
+                <span className="px-2 py-0.5 rounded-full bg-amber-500 text-white font-semibold text-[10px] uppercase">
+                  {product.status}
+                </span>
+                {product.featured && (
+                  <span className="px-2 py-0.5 rounded-full bg-blue-500 text-white font-semibold text-[10px]">
+                    Featured
+                  </span>
+                )}
+              </p>
+              <p className="text-zinc-500 dark:text-zinc-400 text-[11px]">
+                {isAdmin
+                  ? 'You have global administrative rights to modify all product fields, pricing, inventory, and status.'
+                  : 'You are the merchant of this listing and can make changes anytime.'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap">
+            <select
+              value={product.status}
+              onChange={(e) => {
+                const newStat = e.target.value as ProductStatus;
+                updateProduct({ ...product, status: newStat });
+                addToast('success', 'Status Updated', `Listing status is now ${newStat}.`);
+              }}
+              className="px-3 py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 font-bold capitalize text-zinc-900 dark:text-zinc-100 cursor-pointer"
+            >
+              <option value="active">Active (Live)</option>
+              <option value="draft">Draft (Private)</option>
+              <option value="paused">Paused (Hidden)</option>
+              <option value="sold">Sold Out</option>
+              <option value="inactive">Inactive</option>
+            </select>
+
+            <button
+              type="button"
+              onClick={() => {
+                updateProduct({ ...product, featured: !product.featured });
+                addToast('info', 'Featured Toggled', `"${product.title}" featured flag is now ${!product.featured ? 'ON' : 'OFF'}.`);
+              }}
+              className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                product.featured
+                  ? 'bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-950/60 dark:text-amber-300'
+                  : 'bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:text-amber-500'
+              }`}
+              title="Toggle Featured on homepage"
+            >
+              <Star className={`w-4 h-4 ${product.featured ? 'fill-current' : ''}`} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate('edit-listing', { productId: product.id })}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md shadow-blue-500/20 cursor-pointer transition-all"
+            >
+              <Edit3 className="w-3.5 h-3.5" />
+              <span>Edit Listing</span>
+            </button>
+
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm(`Are you sure you want to permanently delete listing "${product.title}"?`)) {
+                    deleteProduct(product.id);
+                    navigate('admin-dashboard');
+                  }
+                }}
+                className="p-2 rounded-xl border border-rose-200 dark:border-rose-900/60 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 cursor-pointer transition-colors"
+                title="Delete Listing"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Main Grid: Gallery + Purchasing Engine */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">

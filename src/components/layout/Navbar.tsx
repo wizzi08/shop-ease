@@ -18,7 +18,8 @@ import {
   Menu,
   X,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  ArrowLeft
 } from 'lucide-react';
 import { useMarketplace } from '../../context/MarketplaceContext';
 
@@ -32,7 +33,10 @@ export const Navbar: React.FC = () => {
     setIsCartOpen,
     wishlist,
     unreadMessagesCount,
+    currentView,
     navigate,
+    goBack,
+    canGoBack,
     openAuthModal,
     logout,
     activeFilter,
@@ -128,8 +132,22 @@ export const Navbar: React.FC = () => {
       {/* Main Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
         <div className="flex items-center justify-between gap-3 md:gap-6">
-          {/* Logo & Category Button */}
-          <div className="flex items-center gap-4">
+          {/* Logo & Back Button & Category Button */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            {canGoBack && currentView !== 'home' && currentView !== 'welcome-auth' && (
+              <button
+                id="navbar-back-button"
+                type="button"
+                onClick={goBack}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all text-xs font-semibold shadow-2xs group cursor-pointer"
+                title="Go back to previous page"
+                aria-label="Go back to previous page"
+              >
+                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-blue-600 dark:text-blue-400" />
+                <span className="hidden sm:inline">Back</span>
+              </button>
+            )}
+
             <button
               onClick={() => navigate('home')}
               className="flex items-center gap-2.5 group text-left"
@@ -252,14 +270,26 @@ export const Navbar: React.FC = () => {
 
           {/* Action Icons */}
           <div className="flex items-center gap-1.5 sm:gap-2.5">
-            {/* Create Listing CTA */}
-            <button
-              onClick={handleCreateListingClick}
-              className="hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs hover:shadow-md transition-all active:scale-95"
-            >
-              <PlusCircle className="w-3.5 h-3.5" />
-              <span>Sell Item</span>
-            </button>
+            {/* Admin Quick Action if Admin */}
+            {currentUser?.role === 'admin' ? (
+              <button
+                onClick={() => navigate('create-listing')}
+                className="hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer"
+                title="Super Admin: Add Product to Catalog"
+              >
+                <PlusCircle className="w-3.5 h-3.5" />
+                <span>+ Add Product</span>
+              </button>
+            ) : (
+              /* Create Listing CTA */
+              <button
+                onClick={handleCreateListingClick}
+                className="hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer"
+              >
+                <PlusCircle className="w-3.5 h-3.5" />
+                <span>Sell Item</span>
+              </button>
+            )}
 
             {/* Dark/Light toggle */}
             <button
@@ -381,16 +411,28 @@ export const Navbar: React.FC = () => {
                         </button>
 
                         {currentUser.role === 'admin' && (
-                          <button
-                            onClick={() => {
-                              setIsUserMenuOpen(false);
-                              navigate('admin-dashboard');
-                            }}
-                            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors font-semibold text-amber-600 dark:text-amber-400"
-                          >
-                            <Shield className="w-3.5 h-3.5 text-amber-500" />
-                            <span>Platform Admin Control</span>
-                          </button>
+                          <>
+                            <button
+                              onClick={() => {
+                                setIsUserMenuOpen(false);
+                                navigate('create-listing');
+                              }}
+                              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/40 transition-colors font-semibold"
+                            >
+                              <PlusCircle className="w-3.5 h-3.5 text-blue-500" />
+                              <span>+ Add Product (Admin)</span>
+                            </button>
+                            <button
+                              onClick={() => {
+                                setIsUserMenuOpen(false);
+                                navigate('admin-dashboard');
+                              }}
+                              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-colors font-semibold text-amber-600 dark:text-amber-400"
+                            >
+                              <Shield className="w-3.5 h-3.5 text-amber-500" />
+                              <span>Platform Admin Control</span>
+                            </button>
+                          </>
                         )}
 
                         <button
@@ -478,6 +520,19 @@ export const Navbar: React.FC = () => {
       {/* Mobile Drawer */}
       {isMobileNavOpen && (
         <div className="lg:hidden bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 px-4 py-4 space-y-3">
+          {canGoBack && currentView !== 'home' && (
+            <button
+              onClick={() => {
+                setIsMobileNavOpen(false);
+                goBack();
+              }}
+              className="w-full py-2 px-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-200 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
+            >
+              <ArrowLeft className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <span>Back to Previous Page</span>
+            </button>
+          )}
+
           <div className="flex gap-2">
             <button
               onClick={() => {

@@ -13,6 +13,7 @@ import {
 import confetti from 'canvas-confetti';
 import { useMarketplace } from '../context/MarketplaceContext';
 import { ShippingAddress, PaymentDetails } from '../types';
+import { BackButton } from '../components/common/BackButton';
 
 interface CheckoutViewProps {
   discount?: number;
@@ -138,10 +139,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ discount = 0, coupon
 
   return (
     <div id="checkout-view" className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-      <div className="flex items-center gap-2 mb-6 text-xs text-zinc-500">
-        <button onClick={() => navigate('cart')} className="flex items-center gap-1 hover:text-zinc-900">
-          <ArrowLeft className="w-3.5 h-3.5" /> Back to cart
-        </button>
+      <div className="flex items-center gap-2 mb-6">
+        <BackButton variant="pill" label="Back to Cart or Previous Page" fallbackView="cart" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">

@@ -34,13 +34,13 @@ import {
 import firebaseAppletConfig from '../../firebase-applet-config.json';
 
 export const firebaseConfig = {
-  apiKey: firebaseAppletConfig.apiKey || "AIzaSyC-8cz0OHpf1GeLn7LojZvgd5AL0rY8wX8",
-  authDomain: firebaseAppletConfig.authDomain || "uplifted-metric-bt8c4.firebaseapp.com",
-  projectId: firebaseAppletConfig.projectId || "uplifted-metric-bt8c4",
-  storageBucket: firebaseAppletConfig.storageBucket || "uplifted-metric-bt8c4.firebasestorage.app",
-  messagingSenderId: firebaseAppletConfig.messagingSenderId || "868179386578",
-  appId: firebaseAppletConfig.appId || "1:868179386578:web:fcfdc44c3cb92cc129cd0b",
-  measurementId: firebaseAppletConfig.measurementId || ""
+  apiKey: firebaseAppletConfig.apiKey || "AIzaSyCxYyl4utbHgEJfJQ5hnIWN6eSet9wiK0o",
+  authDomain: firebaseAppletConfig.authDomain || "shop-net-323d1.firebaseapp.com",
+  projectId: firebaseAppletConfig.projectId || "shop-net-323d1",
+  storageBucket: firebaseAppletConfig.storageBucket || "shop-net-323d1.firebasestorage.app",
+  messagingSenderId: firebaseAppletConfig.messagingSenderId || "464471281231",
+  appId: firebaseAppletConfig.appId || "1:464471281231:web:4b67a55f533b466b0c243a",
+  measurementId: firebaseAppletConfig.measurementId || "G-7CN810XXZ4"
 };
 
 export const firestoreDatabaseId = firebaseAppletConfig.firestoreDatabaseId || "(default)";

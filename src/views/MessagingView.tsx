@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useMarketplace } from '../context/MarketplaceContext';
 import { Conversation, Product } from '../types';
+import { BackButton } from '../components/common/BackButton';
 
 export const MessagingView: React.FC = () => {
   const {
@@ -83,7 +84,11 @@ export const MessagingView: React.FC = () => {
   };
 
   return (
-    <div id="messaging-view" className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div id="messaging-view" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-4">
+      <div>
+        <BackButton variant="pill" label="Back to previous page" fallbackView="home" />
+      </div>
+
       <div className="mb-6">
         <h1 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
           Direct Inquiries & Messages
