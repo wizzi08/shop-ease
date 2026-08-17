@@ -252,7 +252,26 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   const [products, setProducts] = useState<Product[]>(() => {
     const saved = localStorage.getItem('meridian_products');
-    return saved ? JSON.parse(saved) : INITIAL_PRODUCTS;
+    const version = localStorage.getItem('meridian_products_version');
+    const CATALOG_VERSION = 'v2026_realtime_products_v4';
+
+    if (!saved || version !== CATALOG_VERSION) {
+      // Merge: update INITIAL_PRODUCTS with current real-time prices and keep user-created items
+      let existingCustomProducts: Product[] = [];
+      if (saved) {
+        try {
+          const parsed: Product[] = JSON.parse(saved);
+          existingCustomProducts = parsed.filter(p => !p.id.startsWith('prod-') || parseInt(p.id.replace('prod-', ''), 10) > 18);
+        } catch {
+          existingCustomProducts = [];
+        }
+      }
+      const merged = [...INITIAL_PRODUCTS, ...existingCustomProducts];
+      localStorage.setItem('meridian_products', JSON.stringify(merged));
+      localStorage.setItem('meridian_products_version', CATALOG_VERSION);
+      return merged;
+    }
+    return JSON.parse(saved);
   });
 
   const [categories, setCategories] = useState<Category[]>(() => {
