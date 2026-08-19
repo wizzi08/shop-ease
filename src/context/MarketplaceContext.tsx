@@ -476,6 +476,17 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setIsAuthModalOpen(false);
       return true;
     } catch (error: any) {
+      if (
+        error?.code === 'auth/popup-closed-by-user' ||
+        error?.code === 'auth/cancelled-popup-request' ||
+        error?.message?.includes('popup-closed-by-user') ||
+        error?.message?.includes('cancelled-popup-request')
+      ) {
+        // User closed or dismissed the popup window before finishing authentication
+        addToast('info', 'Sign-In Cancelled', 'The Google sign-in window was closed.');
+        return false;
+      }
+
       console.error('Google Sign-In Error:', error);
       if (error?.code === 'auth/unauthorized-domain' || error?.message?.includes('unauthorized-domain')) {
         const currentHostname = typeof window !== 'undefined' ? window.location.hostname : 'current domain';
@@ -485,8 +496,6 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
           'Domain Authorization Needed',
           `Google Sign-In requires adding "${currentHostname}" to your Firebase Console Authorized Domains. You can use Email/Password to sign in or register instantly!`
         );
-      } else if (error?.code === 'auth/popup-closed-by-user') {
-        addToast('info', 'Sign-In Cancelled', 'The Google sign-in window was closed.');
       } else {
         addToast('error', 'Google Sign-In Error', error.message || 'Failed to authenticate with Google');
       }

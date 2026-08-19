@@ -11,6 +11,7 @@ import {
   ChevronDown,
   Store,
   Shield,
+  DollarSign,
   Layers,
   LogOut,
   Settings,
@@ -415,6 +416,16 @@ export const Navbar: React.FC = () => {
                             <button
                               onClick={() => {
                                 setIsUserMenuOpen(false);
+                                navigate('admin-prices');
+                              }}
+                              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors font-semibold"
+                            >
+                              <DollarSign className="w-3.5 h-3.5 text-emerald-500" />
+                              <span>Admin: Edit Prices & Photos</span>
+                            </button>
+                            <button
+                              onClick={() => {
+                                setIsUserMenuOpen(false);
                                 navigate('create-listing');
                               }}
                               className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/40 transition-colors font-semibold"
@@ -493,25 +504,52 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
 
-        {/* Secondary Category Navbar */}
-        <nav className="hidden lg:flex items-center gap-6 pt-3 mt-2 border-t border-zinc-100 dark:border-zinc-800/80 overflow-x-auto no-scrollbar text-xs font-medium text-zinc-600 dark:text-zinc-400">
+        {/* Vertical Category Side Navigation Dock on Left side of screen */}
+        <nav
+          id="category-sidebar-nav"
+          aria-label="Category Navigation"
+          className="hidden xl:flex fixed left-4 top-28 z-30 flex-col items-start gap-1 p-3 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-lg max-h-[calc(100vh-8.5rem)] overflow-y-auto no-scrollbar text-xs font-medium text-zinc-600 dark:text-zinc-400 w-48 transition-all"
+        >
+          <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 w-full border-b border-zinc-100 dark:border-zinc-800 mb-1">
+            Categories
+          </div>
           <button
             onClick={() => handleSelectCategory('all')}
-            className={`hover:text-blue-600 dark:hover:text-blue-400 transition-colors whitespace-nowrap ${
-              activeFilter.categoryId === 'all' ? 'text-blue-600 dark:text-blue-400 font-bold' : ''
+            className={`w-full text-left px-2.5 py-1.5 rounded-xl transition-all whitespace-nowrap flex items-center justify-between group ${
+              activeFilter.categoryId === 'all'
+                ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold'
+                : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100'
             }`}
           >
-            All Products
+            <span>All Products</span>
+            <span className={`text-[10px] px-1.5 py-0.5 rounded-md ${
+              activeFilter.categoryId === 'all'
+                ? 'bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300'
+                : 'text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300'
+            }`}>
+              All
+            </span>
           </button>
           {categories.map(cat => (
             <button
               key={cat.id}
               onClick={() => handleSelectCategory(cat.id)}
-              className={`hover:text-blue-600 dark:hover:text-blue-400 transition-colors whitespace-nowrap ${
-                activeFilter.categoryId === cat.id ? 'text-blue-600 dark:text-blue-400 font-bold' : ''
+              className={`w-full text-left px-2.5 py-1.5 rounded-xl transition-all whitespace-nowrap flex items-center justify-between group ${
+                activeFilter.categoryId === cat.id
+                  ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold'
+                  : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100'
               }`}
             >
-              {cat.name}
+              <span className="truncate">{cat.name}</span>
+              {cat.itemCount !== undefined && (
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-md ${
+                  activeFilter.categoryId === cat.id
+                    ? 'bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300'
+                    : 'text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300'
+                }`}>
+                  {cat.itemCount}
+                </span>
+              )}
             </button>
           ))}
         </nav>

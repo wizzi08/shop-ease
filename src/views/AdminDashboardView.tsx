@@ -137,7 +137,15 @@ export const AdminDashboardView: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          <button
+            type="button"
+            onClick={() => navigate('admin-prices')}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-lg shadow-emerald-500/20 active:scale-95 cursor-pointer transition-all"
+          >
+            <DollarSign className="w-4 h-4" />
+            <span>Edit Prices & Photos</span>
+          </button>
           <button
             type="button"
             onClick={() => navigate('create-listing')}
@@ -409,6 +417,15 @@ export const AdminDashboardView: React.FC = () => {
 
                         <td className="p-4 text-right">
                           <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => navigate('admin-prices')}
+                              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 font-semibold cursor-pointer transition-colors"
+                              title="Edit price and pictures"
+                            >
+                              <DollarSign className="w-3.5 h-3.5" />
+                              <span>Price & Photos</span>
+                            </button>
                             <button
                               type="button"
                               onClick={() => navigate('edit-listing', { productId: prod.id })}

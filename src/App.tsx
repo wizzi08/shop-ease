@@ -18,6 +18,7 @@ import { SellerDashboardView } from './views/SellerDashboardView';
 import { CreateEditListingView } from './views/CreateEditListingView';
 import { MessagingView } from './views/MessagingView';
 import { AdminDashboardView } from './views/AdminDashboardView';
+import { AdminProductPriceImageView } from './views/AdminProductPriceImageView';
 import { UserProfileView } from './views/UserProfileView';
 import { AccountSettingsView } from './views/AccountSettingsView';
 import { HelpContactView } from './views/HelpContactView';
@@ -65,6 +66,11 @@ const MainContent: React.FC = () => {
         return <MessagingView />;
       case 'admin-dashboard':
         return <AdminDashboardView />;
+      case 'admin-products':
+      case 'admin-prices':
+      case 'admin-price-editor':
+      case 'admin-pictures':
+        return <AdminProductPriceImageView />;
       case 'profile':
         return <UserProfileView userId={viewParams?.userId || 'user-seller-1'} />;
       case 'settings':
