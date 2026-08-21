@@ -185,7 +185,7 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({ userId }) => {
             This merchant currently has no active listings.
           </div>
         ) : (
-          <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-1.5 sm:gap-3 lg:gap-4">
+          <div className="grid grid-cols-2 min-[440px]:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2.5 sm:gap-3.5 lg:gap-4">
             {userProducts.map(p => (
               <ProductCard key={p.id} product={p} />
             ))}

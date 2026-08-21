@@ -245,7 +245,7 @@ export const HomeView: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-1.5 sm:gap-3 lg:gap-4 relative z-10">
+          <div className="grid grid-cols-2 min-[440px]:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2.5 sm:gap-3.5 lg:gap-4 relative z-10">
             {flashDeals.map(prod => (
               <ProductCard key={prod.id} product={prod} />
             ))}
@@ -273,7 +273,7 @@ export const HomeView: React.FC = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-1.5 sm:gap-3 lg:gap-4">
+        <div className="grid grid-cols-2 min-[440px]:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2.5 sm:gap-3.5 lg:gap-4">
           {featuredProducts.map(prod => (
             <ProductCard key={prod.id} product={prod} />
           ))}
@@ -365,7 +365,7 @@ export const HomeView: React.FC = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-1.5 sm:gap-3 lg:gap-4">
+        <div className="grid grid-cols-2 min-[440px]:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2.5 sm:gap-3.5 lg:gap-4">
           {latestListings.map(prod => (
             <ProductCard key={prod.id} product={prod} />
           ))}

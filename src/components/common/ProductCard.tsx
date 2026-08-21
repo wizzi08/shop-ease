@@ -185,42 +185,42 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode = 'g
         />
 
         {/* Top Badges */}
-        <div className="absolute top-1 left-1 sm:top-2 sm:left-2 flex flex-col items-start gap-0.5 sm:gap-1 z-10">
-          <span className={`text-[7.5px] sm:text-[9px] font-bold tracking-wide uppercase px-1 py-0.2 sm:px-1.5 sm:py-0.5 rounded sm:rounded-md border shadow-2xs backdrop-blur-xs leading-tight ${cond.badge}`}>
+        <div className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 flex flex-col items-start gap-1 z-10">
+          <span className={`text-[8.5px] sm:text-[9px] font-bold tracking-wide uppercase px-1.5 py-0.5 rounded sm:rounded-md border shadow-2xs backdrop-blur-xs leading-tight ${cond.badge}`}>
             {cond.label}
           </span>
           {hasDiscount && (
-            <span className="text-[7.5px] sm:text-[9px] font-black px-1 py-0.2 sm:px-1.5 sm:py-0.5 rounded sm:rounded-md bg-gradient-to-r from-amber-500 to-rose-500 text-white shadow-xs leading-tight">
+            <span className="text-[8.5px] sm:text-[9px] font-black px-1.5 py-0.5 rounded sm:rounded-md bg-gradient-to-r from-amber-500 to-rose-500 text-white shadow-xs leading-tight">
               -{discountPercent}%
             </span>
           )}
         </div>
 
         {/* Wishlist and Admin Edit Buttons */}
-        <div className="absolute top-1 right-1 sm:top-2 sm:right-2 flex items-center gap-0.5 sm:gap-1 z-10">
+        <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 flex items-center gap-1 z-10">
           {isAdmin && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 navigate('edit-listing', { productId: product.id });
               }}
-              className="p-1 sm:p-1.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transition-colors"
+              className="p-1.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transition-colors"
               title="Admin: Edit Product"
               aria-label="Admin edit product"
             >
-              <Edit3 className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+              <Edit3 className="w-3 h-3" />
             </button>
           )}
           <button
             onClick={handleToggleWishlist}
-            className={`p-1 sm:p-1.5 rounded-full backdrop-blur-md transition-all ${
+            className={`p-1.5 rounded-full backdrop-blur-md transition-all ${
               isFavorited
                 ? 'bg-rose-500 text-white shadow-md scale-105'
                 : 'bg-white/90 dark:bg-stone-900/90 text-stone-700 dark:text-stone-300 hover:text-rose-500 shadow-2xs'
             }`}
             aria-label="Save to wishlist"
           >
-            <Heart className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${isFavorited ? 'fill-current' : ''}`} />
+            <Heart className={`w-3 h-3 ${isFavorited ? 'fill-current' : ''}`} />
           </button>
         </div>
 
@@ -244,69 +244,68 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode = 'g
         )}
 
         {/* Fast Action Quick-Add Overlay */}
-        <div className="absolute inset-x-1.5 bottom-1.5 sm:inset-x-2 sm:bottom-2 hidden group-hover:flex items-center gap-1 z-20">
+        <div className="absolute inset-x-2 bottom-2 hidden group-hover:flex items-center gap-1 z-20">
           <button
             onClick={handleAddToCart}
-            className="flex-1 flex items-center justify-center gap-1 py-1 sm:py-1.5 px-1 sm:px-2 rounded-md sm:rounded-lg bg-stone-900/95 dark:bg-amber-500 dark:hover:bg-amber-400 hover:bg-stone-900 text-white dark:text-stone-950 text-[10px] sm:text-[11px] font-bold shadow-md backdrop-blur-sm transition-all active:scale-98 cursor-pointer"
+            className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-stone-900/95 dark:bg-amber-500 dark:hover:bg-amber-400 hover:bg-stone-900 text-white dark:text-stone-950 text-[11px] font-bold shadow-md backdrop-blur-sm transition-all active:scale-98 cursor-pointer"
           >
-            <ShoppingBag className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-            <span className="hidden min-[380px]:inline">Quick Add</span>
+            <ShoppingBag className="w-3 h-3" />
+            <span>Quick Add</span>
           </button>
         </div>
       </div>
 
       {/* Content Body */}
-      <div className="flex-1 flex flex-col p-1.5 sm:p-3">
+      <div className="flex-1 flex flex-col p-2.5 sm:p-3">
         {/* Category Pill and Seller info */}
-        <div className="flex items-center justify-between text-xs mb-0.5 sm:mb-1 gap-1">
-          <span className={`text-[7.5px] sm:text-[9px] font-semibold px-1 py-0.2 sm:px-1.5 sm:py-0.5 rounded-full border truncate max-w-[46px] min-[400px]:max-w-[70px] sm:max-w-none leading-none ${categoryTheme.badge}`}>
+        <div className="flex items-center justify-between text-xs mb-1 gap-1">
+          <span className={`text-[8.5px] sm:text-[9px] font-semibold px-1.5 py-0.5 rounded-full border truncate max-w-[80px] sm:max-w-none leading-none ${categoryTheme.badge}`}>
             {categoryTheme.name}
           </span>
-          <span className="flex items-center gap-0.5 text-stone-700 dark:text-stone-300 text-[8px] sm:text-[11px] font-bold shrink-0">
-            <Star className="w-2 h-2 sm:w-2.5 sm:h-2.5 fill-amber-400 text-amber-400" />
+          <span className="flex items-center gap-0.5 text-stone-700 dark:text-stone-300 text-[10px] sm:text-[11px] font-bold shrink-0">
+            <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
             {product.rating.toFixed(1)}
           </span>
         </div>
 
         {/* Title */}
-        <h3 className="text-[10px] min-[400px]:text-[11px] sm:text-[13px] font-bold text-stone-900 dark:text-stone-100 line-clamp-1 sm:line-clamp-2 leading-tight sm:leading-snug group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+        <h3 className="text-xs sm:text-[13px] font-bold text-stone-900 dark:text-stone-100 line-clamp-2 leading-snug group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
           {product.title}
         </h3>
 
-        {/* Seller name & location (compact on mobile) */}
-        <div className="hidden min-[440px]:flex items-center justify-between text-[8px] sm:text-[10px] text-stone-500 dark:text-stone-400 mt-1">
+        {/* Seller name & location */}
+        <div className="flex items-center justify-between text-[9px] sm:text-[10px] text-stone-500 dark:text-stone-400 mt-1">
           <span className="flex items-center gap-0.5 truncate font-medium">
             {product.sellerName}
             {product.sellerVerified && (
-              <CheckCircle className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-sky-500 shrink-0" />
+              <CheckCircle className="w-2.5 h-2.5 text-sky-500 shrink-0" />
             )}
           </span>
-          <span className="hidden sm:flex items-center gap-0.5 text-stone-400 shrink-0">
+          <span className="flex items-center gap-0.5 text-stone-400 shrink-0">
             <MapPin className="w-2.5 h-2.5" />
             {product.location.split(',')[0]}
           </span>
         </div>
 
         {/* Price and Stock Details */}
-        <div className="mt-auto pt-1 sm:pt-2 flex items-baseline justify-between border-t border-stone-100 dark:border-stone-800/80 gap-0.5">
-          <div className="flex items-baseline gap-0.5 sm:gap-1">
-            <span className="text-[11px] min-[400px]:text-xs sm:text-[14px] md:text-[15px] font-black text-stone-900 dark:text-stone-50 shrink-0">
-              ${product.price.toFixed(0)}
-              <span className="text-[9px] sm:text-xs font-bold">{((product.price % 1).toFixed(2)).substring(1)}</span>
+        <div className="mt-auto pt-1.5 sm:pt-2 flex items-baseline justify-between border-t border-stone-100 dark:border-stone-800/80 gap-1">
+          <div className="flex items-baseline gap-1">
+            <span className="text-xs sm:text-[14px] md:text-[15px] font-black text-stone-900 dark:text-stone-50 shrink-0">
+              ${product.price.toFixed(2)}
             </span>
             {hasDiscount && (
-              <span className="hidden min-[480px]:inline text-[8px] sm:text-[10px] text-stone-400 line-through">
-                ${product.originalPrice!.toFixed(0)}
+              <span className="hidden min-[380px]:inline text-[9px] sm:text-[10px] text-stone-400 line-through">
+                ${product.originalPrice!.toFixed(2)}
               </span>
             )}
           </div>
 
           {hasFreeShipping ? (
-            <span className="hidden min-[380px]:inline-block text-[7px] sm:text-[9px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-0.5 sm:px-1 py-0.2 sm:py-0.5 rounded border border-emerald-200/80 dark:border-emerald-800/60 leading-none">
+            <span className="text-[8px] sm:text-[9px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-1 py-0.5 rounded border border-emerald-200/80 dark:border-emerald-800/60 leading-none">
               Free ship
             </span>
           ) : (
-            <span className="hidden min-[420px]:inline-block text-[7px] sm:text-[9px] text-stone-400 font-medium">
+            <span className="text-[8px] sm:text-[9px] text-stone-400 font-medium">
               +{product.shippingOptions[0]?.price ? `$${product.shippingOptions[0].price.toFixed(0)}` : 'ship'}
             </span>
           )}
