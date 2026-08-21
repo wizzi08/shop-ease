@@ -697,7 +697,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productId 
               See All
             </button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-1.5 sm:gap-3 lg:gap-4">
             {relatedProducts.map(p => (
               <ProductCard key={p.id} product={p} />
             ))}

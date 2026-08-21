@@ -23,6 +23,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { useMarketplace } from '../../context/MarketplaceContext';
+import { getCategoryTheme } from '../../lib/colorThemes';
 
 export const Navbar: React.FC = () => {
   const {
@@ -83,11 +84,7 @@ export const Navbar: React.FC = () => {
       openAuthModal('signup');
       return;
     }
-    if (currentUser.role === 'buyer') {
-      navigate('create-listing');
-    } else {
-      navigate('create-listing');
-    }
+    navigate('create-listing');
   };
 
   // Close search suggestions when clicked outside
@@ -102,26 +99,26 @@ export const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <header id="main-navbar" className="sticky top-0 z-40 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-b border-zinc-200/80 dark:border-zinc-800/80 transition-colors">
-      {/* Top Banner with Quick persona switcher & Free shipping note */}
-      <div className="bg-zinc-900 dark:bg-zinc-900 text-zinc-300 text-[11px] py-1.5 px-4 sm:px-6">
+    <header id="main-navbar" className="sticky top-0 z-40 bg-white/95 dark:bg-stone-950/95 backdrop-blur-md border-b border-stone-200/90 dark:border-stone-800/90 transition-colors">
+      {/* Top Banner with Summer Note & Live Connectivity */}
+      <div className="bg-stone-900 dark:bg-stone-950 text-stone-300 text-[11px] py-1.5 px-4 sm:px-6 border-b border-stone-800">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1 font-semibold text-emerald-400">
+            <span className="inline-flex items-center gap-1 font-bold text-amber-400">
               <Sparkles className="w-3 h-3" />
-              Summer Flash Sale:
+              Summer Marketplace Event:
             </span>
-            <span className="hidden sm:inline">Use code <strong className="text-white">MERIDIAN15</strong> for 15% off orders</span>
+            <span className="hidden sm:inline text-stone-300">Use code <strong className="text-amber-300 font-bold">MERIDIAN15</strong> for 15% off curated items</span>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden lg:flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-zinc-800/80 border border-zinc-700/60 text-[10px]">
-              <span className={`w-1.5 h-1.5 rounded-full ${isFirebaseConnected ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
-              <span className="text-zinc-300 font-medium">Firebase: {firebaseProjectId}</span>
+            <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stone-800 border border-stone-700/80 text-[10px]">
+              <span className={`w-1.5 h-1.5 rounded-full ${isFirebaseConnected ? 'bg-emerald-400 animate-pulse shadow-xs shadow-emerald-400' : 'bg-amber-400'}`} />
+              <span className="text-stone-300 font-medium">Cloud DB: {firebaseProjectId || 'active'}</span>
             </div>
             <button
               onClick={() => navigate('help')}
-              className="text-zinc-400 hover:text-white transition-colors flex items-center gap-1"
+              className="text-stone-400 hover:text-amber-300 transition-colors flex items-center gap-1"
             >
               <HelpCircle className="w-3 h-3" />
               <span className="hidden md:inline">Help Center</span>
@@ -140,11 +137,11 @@ export const Navbar: React.FC = () => {
                 id="navbar-back-button"
                 type="button"
                 onClick={goBack}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all text-xs font-semibold shadow-2xs group cursor-pointer"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-950 dark:hover:text-white transition-all text-xs font-semibold shadow-2xs group cursor-pointer"
                 title="Go back to previous page"
                 aria-label="Go back to previous page"
               >
-                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-blue-600 dark:text-blue-400" />
+                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-amber-600 dark:text-amber-400" />
                 <span className="hidden sm:inline">Back</span>
               </button>
             )}
@@ -153,14 +150,14 @@ export const Navbar: React.FC = () => {
               onClick={() => navigate('home')}
               className="flex items-center gap-2.5 group text-left"
             >
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center font-black text-lg shadow-md group-hover:scale-105 transition-transform">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-500 to-indigo-600 text-white flex items-center justify-center font-black text-lg shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform">
                 M
               </div>
               <div className="hidden sm:block">
-                <div className="text-base font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-1">
-                  Meridian <span className="text-xs font-semibold px-1.5 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">MARKET</span>
+                <div className="text-base font-black tracking-tight text-stone-900 dark:text-stone-100 flex items-center gap-1">
+                  Meridian <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-300/60 dark:border-amber-800">MARKET</span>
                 </div>
-                <div className="text-[10px] text-zinc-500 tracking-wide font-medium">Curated Global Exchange</div>
+                <div className="text-[10px] text-stone-500 tracking-wide font-medium">Curated Goods Exchange</div>
               </div>
             </button>
 
@@ -168,35 +165,46 @@ export const Navbar: React.FC = () => {
             <div className="relative hidden lg:block">
               <button
                 onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-700/80 transition-all"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700/80 transition-all hover:border-amber-400/60"
               >
-                <Layers className="w-3.5 h-3.5 text-zinc-500" />
+                <Layers className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                 <span>Categories</span>
-                <ChevronDown className={`w-3 h-3 transition-transform ${isCategoryMenuOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3 h-3 transition-transform text-stone-400 ${isCategoryMenuOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {isCategoryMenuOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setIsCategoryMenuOpen(false)} />
-                  <div className="absolute left-0 mt-2 w-72 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="absolute left-0 mt-2 w-72 bg-white dark:bg-stone-900 rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-800 p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                     <button
                       onClick={() => handleSelectCategory('all')}
-                      className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-between"
+                      className="w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold text-stone-900 dark:text-stone-100 hover:bg-amber-50 dark:hover:bg-stone-800 flex items-center justify-between transition-colors"
                     >
-                      <span>Explore All Products</span>
-                      <ArrowRight className="w-3 h-3 text-zinc-400" />
+                      <span className="flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                        Explore All Departments
+                      </span>
+                      <ArrowRight className="w-3 h-3 text-stone-400" />
                     </button>
-                    <div className="my-1 border-t border-zinc-100 dark:border-zinc-800" />
-                    {categories.map(cat => (
-                      <button
-                        key={cat.id}
-                        onClick={() => handleSelectCategory(cat.id)}
-                        className="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-blue-600 dark:hover:text-blue-400 flex items-center justify-between transition-colors"
-                      >
-                        <span className="truncate">{cat.name}</span>
-                        <span className="text-[10px] text-zinc-400 font-normal">{cat.itemCount} items</span>
-                      </button>
-                    ))}
+                    <div className="my-1 border-t border-stone-100 dark:border-stone-800" />
+                    {categories.map(cat => {
+                      const theme = getCategoryTheme(cat.id);
+                      return (
+                        <button
+                          key={cat.id}
+                          onClick={() => handleSelectCategory(cat.id)}
+                          className="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800/80 flex items-center justify-between transition-colors group"
+                        >
+                          <span className="flex items-center gap-2 truncate">
+                            <span className={`w-2 h-2 rounded-full ${theme.accent}`} />
+                            <span className="group-hover:text-amber-600 dark:group-hover:text-amber-400 font-semibold transition-colors">
+                              {cat.name}
+                            </span>
+                          </span>
+                          <span className="text-[10px] text-stone-400 font-normal">{cat.itemCount} items</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </>
               )}
@@ -207,14 +215,14 @@ export const Navbar: React.FC = () => {
           <div ref={searchContainerRef} className="flex-1 max-w-xl relative">
             <form onSubmit={handleSearchSubmit}>
               <div className="relative">
-                <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   onFocus={() => setIsSearchFocused(true)}
-                  placeholder="Search headphones, vintage jackets, walnut chairs, cameras..."
-                  className="w-full pl-10 pr-10 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-900/90 text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm focus:bg-white dark:focus:bg-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-hidden transition-all shadow-2xs"
+                  placeholder="Search audio, selvedge denim, walnut furniture, cameras..."
+                  className="w-full pl-10 pr-10 py-2 rounded-full border border-stone-200 dark:border-stone-800 bg-stone-50/90 dark:bg-stone-900/90 text-stone-900 dark:text-stone-100 text-xs sm:text-sm focus:bg-white dark:focus:bg-stone-900 focus:ring-2 focus:ring-amber-500/40 focus:border-amber-400 outline-hidden transition-all shadow-2xs placeholder:text-stone-400"
                 />
                 {searchQuery && (
                   <button
@@ -223,7 +231,7 @@ export const Navbar: React.FC = () => {
                       setSearchQuery('');
                       setFilter({ searchQuery: '' });
                     }}
-                    className="p-1 rounded-full text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 absolute right-3 top-1/2 -translate-y-1/2"
+                    className="p-1 rounded-full text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 absolute right-3 top-1/2 -translate-y-1/2"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -233,12 +241,12 @@ export const Navbar: React.FC = () => {
 
             {/* Autocomplete Dropdown */}
             {isSearchFocused && searchQuery.trim().length > 1 && (
-              <div className="absolute left-0 right-0 mt-2 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 p-3 z-50 animate-in fade-in zoom-in-95">
-                <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-2">
-                  Matching Products & Tags:
+              <div className="absolute left-0 right-0 mt-2 bg-white dark:bg-stone-900 rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-800 p-3 z-50 animate-in fade-in zoom-in-95">
+                <p className="text-[11px] font-bold text-stone-400 uppercase tracking-wider mb-2">
+                  Matching Products & Listings:
                 </p>
                 {searchSuggestions.length === 0 ? (
-                  <p className="text-xs text-zinc-500 py-2">No matching products found. Press Enter to search catalog.</p>
+                  <p className="text-xs text-stone-500 py-2">No matching products found. Press Enter to search catalog.</p>
                 ) : (
                   <div className="space-y-1">
                     {searchSuggestions.map(item => (
@@ -248,18 +256,18 @@ export const Navbar: React.FC = () => {
                           setIsSearchFocused(false);
                           navigate('product', { productId: item.id });
                         }}
-                        className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/60 cursor-pointer transition-colors"
+                        className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-800/60 cursor-pointer transition-colors"
                       >
                         <img
                           src={item.images[0]}
                           alt={item.title}
-                          className="w-9 h-9 rounded-lg object-cover bg-zinc-100 shrink-0"
+                          className="w-9 h-9 rounded-lg object-cover bg-stone-100 shrink-0"
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+                          <p className="text-xs font-bold text-stone-900 dark:text-stone-100 truncate">
                             {item.title}
                           </p>
-                          <p className="text-[11px] text-zinc-500">${item.price.toFixed(2)} • {item.sellerName}</p>
+                          <p className="text-[11px] text-stone-500 font-medium">${item.price.toFixed(2)} • {item.sellerName}</p>
                         </div>
                       </div>
                     ))}
@@ -271,31 +279,19 @@ export const Navbar: React.FC = () => {
 
           {/* Action Icons */}
           <div className="flex items-center gap-1.5 sm:gap-2.5">
-            {/* Admin Quick Action if Admin */}
-            {currentUser?.role === 'admin' ? (
-              <button
-                onClick={() => navigate('create-listing')}
-                className="hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer"
-                title="Super Admin: Add Product to Catalog"
-              >
-                <PlusCircle className="w-3.5 h-3.5" />
-                <span>+ Add Product</span>
-              </button>
-            ) : (
-              /* Create Listing CTA */
-              <button
-                onClick={handleCreateListingClick}
-                className="hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer"
-              >
-                <PlusCircle className="w-3.5 h-3.5" />
-                <span>Sell Item</span>
-              </button>
-            )}
+            {/* Create Listing CTA */}
+            <button
+              onClick={handleCreateListingClick}
+              className="hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-extrabold shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer"
+            >
+              <PlusCircle className="w-3.5 h-3.5" />
+              <span>Sell Item</span>
+            </button>
 
             {/* Dark/Light toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 active:scale-90 transition-all cursor-pointer"
+              className="p-2 rounded-full text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 active:scale-90 transition-all cursor-pointer"
               aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
               title={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
             >
@@ -312,12 +308,12 @@ export const Navbar: React.FC = () => {
                 if (!currentUser) openAuthModal('login');
                 else navigate('wishlist');
               }}
-              className="relative p-2 rounded-full text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              className="relative p-2 rounded-full text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
               aria-label="Saved Wishlist"
             >
               <Heart className="w-4 h-4" />
               {wishlist.length > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                <span className="absolute top-1 right-1 w-4 h-4 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-xs">
                   {wishlist.length}
                 </span>
               )}
@@ -329,12 +325,12 @@ export const Navbar: React.FC = () => {
                 if (!currentUser) openAuthModal('login');
                 else navigate('messaging');
               }}
-              className="relative p-2 rounded-full text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              className="relative p-2 rounded-full text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
               aria-label="Messages"
             >
               <MessageSquare className="w-4 h-4" />
               {unreadMessagesCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 bg-blue-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
+                <span className="absolute top-1 right-1 w-4 h-4 bg-amber-500 text-stone-950 text-[10px] font-black rounded-full flex items-center justify-center shadow-xs animate-pulse">
                   {unreadMessagesCount}
                 </span>
               )}
@@ -343,10 +339,10 @@ export const Navbar: React.FC = () => {
             {/* Cart Drawer Trigger */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative flex items-center gap-1 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 transition-all font-semibold text-xs"
+              className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-stone-100 dark:bg-stone-800 hover:bg-amber-100 dark:hover:bg-stone-700 text-stone-900 dark:text-stone-100 transition-all font-bold text-xs border border-stone-200 dark:border-stone-700"
               aria-label="Shopping Cart"
             >
-              <ShoppingBag className="w-4 h-4" />
+              <ShoppingBag className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               <span>{cartItemCount}</span>
             </button>
 
@@ -355,32 +351,32 @@ export const Navbar: React.FC = () => {
               <div className="relative">
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center gap-1.5 p-1 rounded-full hover:ring-2 hover:ring-blue-500 transition-all"
+                  className="flex items-center gap-1.5 p-1 rounded-full hover:ring-2 hover:ring-amber-500 transition-all"
                 >
                   <img
                     src={currentUser.avatar}
                     alt={currentUser.name}
-                    className="w-7 h-7 rounded-full object-cover border border-zinc-300 dark:border-zinc-700"
+                    className="w-7 h-7 rounded-full object-cover border border-amber-400/50"
                   />
-                  <ChevronDown className={`w-3 h-3 text-zinc-500 hidden sm:block transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-3 h-3 text-stone-500 hidden sm:block transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {isUserMenuOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setIsUserMenuOpen(false)} />
-                    <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-stone-900 rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-800 p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                       {/* User Header */}
-                      <div className="px-3 py-2.5 border-b border-zinc-100 dark:border-zinc-800">
-                        <p className="text-xs font-bold text-zinc-900 dark:text-zinc-100 truncate">
+                      <div className="px-3 py-2.5 border-b border-stone-100 dark:border-stone-800">
+                        <p className="text-xs font-bold text-stone-900 dark:text-stone-100 truncate">
                           {currentUser.name}
                         </p>
-                        <p className="text-[11px] text-zinc-500 truncate">{currentUser.email}</p>
+                        <p className="text-[11px] text-stone-500 truncate">{currentUser.email}</p>
                         <div className="mt-1 flex items-center gap-1.5">
-                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-300 capitalize">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-300 capitalize">
                             {currentUser.role}
                           </span>
                           {currentUser.storeName && (
-                            <span className="text-[10px] text-zinc-500 truncate">
+                            <span className="text-[10px] text-stone-500 truncate">
                               • {currentUser.storeName}
                             </span>
                           )}
@@ -394,7 +390,7 @@ export const Navbar: React.FC = () => {
                             setIsUserMenuOpen(false);
                             navigate('buyer-dashboard');
                           }}
-                          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors font-medium"
                         >
                           <ShoppingBag className="w-3.5 h-3.5 text-blue-500" />
                           <span>Buyer Dashboard & Orders</span>
@@ -405,7 +401,7 @@ export const Navbar: React.FC = () => {
                             setIsUserMenuOpen(false);
                             navigate('seller-dashboard');
                           }}
-                          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors font-medium"
                         >
                           <Store className="w-3.5 h-3.5 text-purple-500" />
                           <span>Seller Dashboard & Store</span>
@@ -418,7 +414,7 @@ export const Navbar: React.FC = () => {
                                 setIsUserMenuOpen(false);
                                 navigate('admin-prices');
                               }}
-                              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors font-semibold"
+                              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors font-semibold"
                             >
                               <DollarSign className="w-3.5 h-3.5 text-emerald-500" />
                               <span>Admin: Edit Prices & Photos</span>
@@ -428,9 +424,9 @@ export const Navbar: React.FC = () => {
                                 setIsUserMenuOpen(false);
                                 navigate('create-listing');
                               }}
-                              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/40 transition-colors font-semibold"
+                              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-colors font-semibold"
                             >
-                              <PlusCircle className="w-3.5 h-3.5 text-blue-500" />
+                              <PlusCircle className="w-3.5 h-3.5 text-amber-500" />
                               <span>+ Add Product (Admin)</span>
                             </button>
                             <button
@@ -438,7 +434,7 @@ export const Navbar: React.FC = () => {
                                 setIsUserMenuOpen(false);
                                 navigate('admin-dashboard');
                               }}
-                              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-colors font-semibold text-amber-600 dark:text-amber-400"
+                              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-colors font-semibold text-amber-700 dark:text-amber-400"
                             >
                               <Shield className="w-3.5 h-3.5 text-amber-500" />
                               <span>Platform Admin Control</span>
@@ -451,9 +447,9 @@ export const Navbar: React.FC = () => {
                             setIsUserMenuOpen(false);
                             navigate('profile', { userId: currentUser.id });
                           }}
-                          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors font-medium"
                         >
-                          <UserIcon className="w-3.5 h-3.5 text-zinc-400" />
+                          <UserIcon className="w-3.5 h-3.5 text-stone-400" />
                           <span>Public Profile</span>
                         </button>
 
@@ -462,20 +458,20 @@ export const Navbar: React.FC = () => {
                             setIsUserMenuOpen(false);
                             navigate('settings');
                           }}
-                          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors font-medium"
                         >
-                          <Settings className="w-3.5 h-3.5 text-zinc-400" />
+                          <Settings className="w-3.5 h-3.5 text-stone-400" />
                           <span>Account Settings</span>
                         </button>
                       </div>
 
-                      <div className="pt-1 border-t border-zinc-100 dark:border-zinc-800">
+                      <div className="pt-1 border-t border-stone-100 dark:border-stone-800">
                         <button
                           onClick={() => {
                             setIsUserMenuOpen(false);
                             logout();
                           }}
-                          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors font-semibold"
                         >
                           <LogOut className="w-3.5 h-3.5" />
                           <span>Sign Out</span>
@@ -488,7 +484,7 @@ export const Navbar: React.FC = () => {
             ) : (
               <button
                 onClick={() => openAuthModal('login')}
-                className="px-3.5 py-2 rounded-full bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 font-semibold text-xs transition-all shadow-xs"
+                className="px-3.5 py-2 rounded-full bg-stone-900 hover:bg-stone-800 dark:bg-amber-500 dark:hover:bg-amber-400 text-white dark:text-stone-950 font-bold text-xs transition-all shadow-xs"
               >
                 Sign In
               </button>
@@ -497,76 +493,56 @@ export const Navbar: React.FC = () => {
             {/* Mobile menu trigger */}
             <button
               onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
-              className="lg:hidden p-2 rounded-xl text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              className="lg:hidden p-2 rounded-xl text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"
             >
               {isMobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
-        {/* Vertical Category Side Navigation Dock on Left side of screen */}
-        <nav
-          id="category-sidebar-nav"
-          aria-label="Category Navigation"
-          className="hidden xl:flex fixed left-4 top-28 z-30 flex-col items-start gap-1 p-3 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-lg max-h-[calc(100vh-8.5rem)] overflow-y-auto no-scrollbar text-xs font-medium text-zinc-600 dark:text-zinc-400 w-48 transition-all"
-        >
-          <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 w-full border-b border-zinc-100 dark:border-zinc-800 mb-1">
-            Categories
-          </div>
+        {/* Secondary Category Navbar */}
+        <nav className="hidden lg:flex items-center gap-5 pt-3 mt-2 border-t border-stone-100 dark:border-stone-800/80 overflow-x-auto no-scrollbar text-xs font-semibold text-stone-600 dark:text-stone-400">
           <button
             onClick={() => handleSelectCategory('all')}
-            className={`w-full text-left px-2.5 py-1.5 rounded-xl transition-all whitespace-nowrap flex items-center justify-between group ${
+            className={`transition-colors whitespace-nowrap px-2.5 py-1 rounded-lg ${
               activeFilter.categoryId === 'all'
-                ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold'
-                : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100'
+                ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 font-bold'
+                : 'hover:text-amber-600 dark:hover:text-amber-400'
             }`}
           >
-            <span>All Products</span>
-            <span className={`text-[10px] px-1.5 py-0.5 rounded-md ${
-              activeFilter.categoryId === 'all'
-                ? 'bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300'
-                : 'text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300'
-            }`}>
-              All
-            </span>
+            All Products
           </button>
-          {categories.map(cat => (
-            <button
-              key={cat.id}
-              onClick={() => handleSelectCategory(cat.id)}
-              className={`w-full text-left px-2.5 py-1.5 rounded-xl transition-all whitespace-nowrap flex items-center justify-between group ${
-                activeFilter.categoryId === cat.id
-                  ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold'
-                  : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100'
-              }`}
-            >
-              <span className="truncate">{cat.name}</span>
-              {cat.itemCount !== undefined && (
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-md ${
-                  activeFilter.categoryId === cat.id
-                    ? 'bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300'
-                    : 'text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300'
-                }`}>
-                  {cat.itemCount}
-                </span>
-              )}
-            </button>
-          ))}
+          {categories.map(cat => {
+            const isSelected = activeFilter.categoryId === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => handleSelectCategory(cat.id)}
+                className={`transition-colors whitespace-nowrap px-2.5 py-1 rounded-lg ${
+                  isSelected
+                    ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 font-bold'
+                    : 'hover:text-amber-600 dark:hover:text-amber-400'
+                }`}
+              >
+                {cat.name}
+              </button>
+            );
+          })}
         </nav>
       </div>
 
       {/* Mobile Drawer */}
       {isMobileNavOpen && (
-        <div className="lg:hidden bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 px-4 py-4 space-y-3">
+        <div className="lg:hidden bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 px-4 py-4 space-y-3">
           {canGoBack && currentView !== 'home' && (
             <button
               onClick={() => {
                 setIsMobileNavOpen(false);
                 goBack();
               }}
-              className="w-full py-2 px-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-200 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
+              className="w-full py-2 px-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/80 text-stone-700 dark:text-stone-200 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
             >
-              <ArrowLeft className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <ArrowLeft className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               <span>Back to Previous Page</span>
             </button>
           )}
@@ -577,7 +553,7 @@ export const Navbar: React.FC = () => {
                 setIsMobileNavOpen(false);
                 handleCreateListingClick();
               }}
-              className="flex-1 py-2.5 rounded-xl bg-blue-600 text-white font-semibold text-xs flex items-center justify-center gap-1.5 cursor-pointer"
+              className="flex-1 py-2.5 rounded-xl bg-amber-500 text-stone-950 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
             >
               <PlusCircle className="w-4 h-4" />
               Sell an Item
@@ -587,20 +563,20 @@ export const Navbar: React.FC = () => {
                 setIsMobileNavOpen(false);
                 navigate('browse');
               }}
-              className="flex-1 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 text-xs font-semibold text-zinc-800 dark:text-zinc-200 cursor-pointer"
+              className="flex-1 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 text-xs font-bold text-stone-800 dark:text-stone-200 cursor-pointer"
             >
               Browse All
             </button>
           </div>
 
           {currentUser && (
-            <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between gap-2">
+            <div className="pt-2 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between gap-2">
               <button
                 onClick={() => {
                   setIsMobileNavOpen(false);
                   navigate('settings');
                 }}
-                className="flex-1 py-2 px-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 text-xs font-semibold flex items-center justify-center gap-1.5"
+                className="flex-1 py-2 px-3 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 text-xs font-semibold flex items-center justify-center gap-1.5"
               >
                 <Settings className="w-3.5 h-3.5" />
                 <span>Account Settings</span>
@@ -610,7 +586,7 @@ export const Navbar: React.FC = () => {
                   setIsMobileNavOpen(false);
                   navigate(currentUser.role === 'seller' ? 'seller-dashboard' : 'buyer-dashboard');
                 }}
-                className="flex-1 py-2 px-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 text-xs font-semibold flex items-center justify-center gap-1.5"
+                className="flex-1 py-2 px-3 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 text-xs font-semibold flex items-center justify-center gap-1.5"
               >
                 <UserIcon className="w-3.5 h-3.5" />
                 <span>Dashboard</span>
@@ -619,7 +595,7 @@ export const Navbar: React.FC = () => {
           )}
 
           <div className="pt-2">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-2">Categories</p>
+            <p className="text-[11px] font-bold uppercase tracking-wider text-stone-400 mb-2">Categories</p>
             <div className="grid grid-cols-2 gap-2 text-xs">
               {categories.map(c => (
                 <button
@@ -628,7 +604,7 @@ export const Navbar: React.FC = () => {
                     setIsMobileNavOpen(false);
                     handleSelectCategory(c.id);
                   }}
-                  className="text-left p-2 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 text-zinc-700 dark:text-zinc-300 truncate"
+                  className="text-left p-2.5 rounded-xl bg-stone-50 dark:bg-stone-800/60 hover:bg-amber-50 text-stone-700 dark:text-stone-300 font-medium truncate"
                 >
                   {c.name}
                 </button>

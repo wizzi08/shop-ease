@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Heart, ShoppingBag, Star, CheckCircle, ShieldCheck, MapPin, Eye, Edit3 } from 'lucide-react';
+import { Heart, ShoppingBag, Star, CheckCircle, ShieldCheck, MapPin, Edit3, Truck } from 'lucide-react';
 import { Product } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';
+import { CONDITION_THEMES, getCategoryTheme } from '../../lib/colorThemes';
 
 interface ProductCardProps {
   product: Product;
@@ -20,15 +21,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode = 'g
     ? Math.round(((product.originalPrice! - product.price) / product.originalPrice!) * 100)
     : 0;
 
-  const conditionLabels: Record<string, { label: string; color: string }> = {
-    brand_new: { label: 'Brand New', color: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' },
-    like_new: { label: 'Like New', color: 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border-blue-200 dark:border-blue-800' },
-    good: { label: 'Good Condition', color: 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800' },
-    fair: { label: 'Fair Condition', color: 'bg-orange-50 text-orange-700 dark:bg-orange-950/60 dark:text-orange-300 border-orange-200 dark:border-orange-800' },
-    refurbished: { label: 'Certified Refurbished', color: 'bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800' }
-  };
-
-  const cond = conditionLabels[product.condition] || conditionLabels.good;
+  const cond = CONDITION_THEMES[product.condition] || CONDITION_THEMES.good;
+  const categoryTheme = getCategoryTheme(product.categoryId);
+  const hasFreeShipping = product.shippingOptions.some(s => s.isFree || s.price === 0);
 
   const handleCardClick = () => {
     navigate('product', { productId: product.id });
@@ -49,104 +44,118 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode = 'g
       <div
         id={`product-card-${product.id}`}
         onClick={handleCardClick}
-        className="group flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-lg transition-all duration-200 cursor-pointer"
+        className="group flex flex-col sm:flex-row gap-3.5 p-3.5 rounded-xl bg-white dark:bg-stone-900 border border-stone-200/90 dark:border-stone-800 hover:border-amber-400/60 dark:hover:border-amber-500/50 hover:shadow-md hover:shadow-amber-500/5 transition-all duration-300 cursor-pointer"
       >
-        <div className="relative w-full sm:w-56 h-48 sm:h-auto rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 shrink-0">
+        <div className="relative w-full sm:w-44 h-40 sm:h-auto rounded-lg overflow-hidden bg-stone-100 dark:bg-stone-800/80 shrink-0">
           <img
             src={product.images[currentImageIndex] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600'}
             alt={product.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
           />
-          <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 z-10">
+          <div className="absolute top-2 right-2 flex items-center gap-1 z-10">
             {isAdmin && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   navigate('edit-listing', { productId: product.id });
                 }}
-                className="p-2 rounded-full bg-blue-600 text-white shadow-md hover:bg-blue-700 transition-colors"
+                className="p-1.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transition-colors"
                 title="Admin: Edit Product"
                 aria-label="Admin edit product"
               >
-                <Edit3 className="w-4 h-4" />
+                <Edit3 className="w-3 h-3" />
               </button>
             )}
             <button
               onClick={handleToggleWishlist}
-              className={`p-2 rounded-full backdrop-blur-md transition-all ${
+              className={`p-1.5 rounded-full backdrop-blur-md transition-all ${
                 isFavorited
                   ? 'bg-rose-500 text-white shadow-md'
-                  : 'bg-white/80 dark:bg-zinc-900/80 text-zinc-700 dark:text-zinc-300 hover:text-rose-500'
+                  : 'bg-white/90 dark:bg-stone-900/90 text-stone-700 dark:text-stone-300 hover:text-rose-500 shadow-xs'
               }`}
               aria-label="Save to wishlist"
             >
-              <Heart className={`w-4 h-4 ${isFavorited ? 'fill-current' : ''}`} />
+              <Heart className={`w-3 h-3 ${isFavorited ? 'fill-current' : ''}`} />
             </button>
           </div>
         </div>
 
         <div className="flex-1 flex flex-col justify-between min-w-0">
           <div>
-            <div className="flex items-center gap-2 flex-wrap mb-1.5">
-              <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full border ${cond.color}`}>
+            <div className="flex items-center gap-1.5 flex-wrap mb-1.5">
+              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${categoryTheme.badge}`}>
+                {categoryTheme.name}
+              </span>
+              <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${cond.badge}`}>
                 {cond.label}
               </span>
+              {hasFreeShipping && (
+                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
+                  <Truck className="w-2.5 h-2.5 text-emerald-600 dark:text-emerald-400" />
+                  Free Ship
+                </span>
+              )}
               {product.featured && (
-                <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
                   Featured
                 </span>
               )}
               {product.stock <= 3 && product.stock > 0 && (
-                <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-900">
-                  Only {product.stock} left
+                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300 border border-rose-200 dark:border-rose-900">
+                  {product.stock} left
                 </span>
               )}
             </div>
 
-            <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+            <h3 className="text-sm sm:text-[15px] font-bold text-stone-900 dark:text-stone-100 line-clamp-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
               {product.title}
             </h3>
 
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 mt-1 leading-relaxed">
+            <p className="text-xs text-stone-600 dark:text-stone-300 line-clamp-2 mt-1 leading-relaxed">
               {product.description}
             </p>
 
-            <div className="flex items-center gap-3 mt-3 text-xs text-zinc-500 dark:text-zinc-400">
-              <span className="flex items-center gap-1 font-medium text-zinc-800 dark:text-zinc-200">
-                <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                {product.rating.toFixed(1)} ({product.reviewCount})
+            <div className="flex items-center gap-2.5 mt-2.5 text-[11px] text-stone-500 dark:text-stone-400">
+              <span className="flex items-center gap-1 font-semibold text-stone-800 dark:text-stone-200">
+                <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                {product.rating.toFixed(1)} <span className="font-normal text-stone-400">({product.reviewCount})</span>
               </span>
               <span>•</span>
               <span className="flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5" />
+                <MapPin className="w-3 h-3 text-stone-400" />
                 {product.location}
               </span>
               <span>•</span>
-              <span className="flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-blue-500" />
+              <span className="flex items-center gap-1 font-medium text-stone-700 dark:text-stone-300">
+                <CheckCircle className="w-3 h-3 text-sky-500" />
                 {product.sellerName}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center justify-between mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800/80">
+          <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-stone-100 dark:border-stone-800/80">
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+              <span className="text-base sm:text-lg font-black text-stone-900 dark:text-stone-50">
                 ${product.price.toFixed(2)}
               </span>
               {hasDiscount && (
-                <span className="text-xs text-zinc-400 line-through">
+                <span className="text-xs text-stone-400 line-through">
                   ${product.originalPrice!.toFixed(2)}
+                </span>
+              )}
+              {hasDiscount && (
+                <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-200/80 dark:border-emerald-800/60">
+                  Save ${(product.originalPrice! - product.price).toFixed(2)}
                 </span>
               )}
             </div>
 
             <button
               onClick={handleAddToCart}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 text-xs font-semibold shadow-sm transition-all"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-stone-900 hover:bg-stone-800 dark:bg-amber-500 dark:hover:bg-amber-400 text-white dark:text-stone-950 text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer"
             >
-              <ShoppingBag className="w-4 h-4" />
+              <ShoppingBag className="w-3 h-3" />
               Add to Cart
             </button>
           </div>
@@ -164,10 +173,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode = 'g
         setIsHovered(false);
         setCurrentImageIndex(0);
       }}
-      className="group relative flex flex-col rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/90 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer"
+      className="group relative flex flex-col rounded-xl bg-white dark:bg-stone-900 border border-stone-200/90 dark:border-stone-800 hover:border-amber-400/70 dark:hover:border-amber-500/50 hover:shadow-lg hover:shadow-amber-500/5 transition-all duration-200 overflow-hidden cursor-pointer"
     >
       {/* Image Container */}
-      <div className="relative aspect-square w-full bg-zinc-100 dark:bg-zinc-800/50 overflow-hidden">
+      <div className="relative aspect-square w-full bg-stone-100 dark:bg-stone-800/60 overflow-hidden">
         <img
           src={product.images[currentImageIndex] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600'}
           alt={product.title}
@@ -176,48 +185,48 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode = 'g
         />
 
         {/* Top Badges */}
-        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5 z-10">
-          <span className={`text-[10px] font-semibold tracking-wide uppercase px-2 py-0.5 rounded-full border shadow-sm ${cond.color}`}>
+        <div className="absolute top-1 left-1 sm:top-2 sm:left-2 flex flex-col items-start gap-0.5 sm:gap-1 z-10">
+          <span className={`text-[7.5px] sm:text-[9px] font-bold tracking-wide uppercase px-1 py-0.2 sm:px-1.5 sm:py-0.5 rounded sm:rounded-md border shadow-2xs backdrop-blur-xs leading-tight ${cond.badge}`}>
             {cond.label}
           </span>
           {hasDiscount && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-600 text-white shadow-sm">
-              -{discountPercent}% OFF
+            <span className="text-[7.5px] sm:text-[9px] font-black px-1 py-0.2 sm:px-1.5 sm:py-0.5 rounded sm:rounded-md bg-gradient-to-r from-amber-500 to-rose-500 text-white shadow-xs leading-tight">
+              -{discountPercent}%
             </span>
           )}
         </div>
 
         {/* Wishlist and Admin Edit Buttons */}
-        <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 z-10">
+        <div className="absolute top-1 right-1 sm:top-2 sm:right-2 flex items-center gap-0.5 sm:gap-1 z-10">
           {isAdmin && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 navigate('edit-listing', { productId: product.id });
               }}
-              className="p-2 rounded-full bg-blue-600 text-white shadow-md hover:bg-blue-700 transition-colors"
+              className="p-1 sm:p-1.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transition-colors"
               title="Admin: Edit Product"
               aria-label="Admin edit product"
             >
-              <Edit3 className="w-4 h-4" />
+              <Edit3 className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
             </button>
           )}
           <button
             onClick={handleToggleWishlist}
-            className={`p-2 rounded-full backdrop-blur-md transition-all ${
+            className={`p-1 sm:p-1.5 rounded-full backdrop-blur-md transition-all ${
               isFavorited
-                ? 'bg-rose-500 text-white shadow-md'
-                : 'bg-white/85 dark:bg-zinc-900/85 text-zinc-700 dark:text-zinc-300 hover:text-rose-500'
+                ? 'bg-rose-500 text-white shadow-md scale-105'
+                : 'bg-white/90 dark:bg-stone-900/90 text-stone-700 dark:text-stone-300 hover:text-rose-500 shadow-2xs'
             }`}
             aria-label="Save to wishlist"
           >
-            <Heart className={`w-4 h-4 ${isFavorited ? 'fill-current' : ''}`} />
+            <Heart className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${isFavorited ? 'fill-current' : ''}`} />
           </button>
         </div>
 
         {/* Multi-image indicator dots on hover */}
         {product.images.length > 1 && isHovered && (
-          <div className="absolute bottom-2 inset-x-0 flex justify-center gap-1 z-10">
+          <div className="absolute bottom-1.5 inset-x-0 flex justify-center gap-1 z-10">
             {product.images.map((_, idx) => (
               <button
                 key={idx}
@@ -225,8 +234,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode = 'g
                   e.stopPropagation();
                   setCurrentImageIndex(idx);
                 }}
-                className={`h-1.5 rounded-full transition-all ${
-                  currentImageIndex === idx ? 'w-4 bg-white' : 'w-1.5 bg-white/60'
+                className={`h-1 rounded-full transition-all ${
+                  currentImageIndex === idx ? 'w-3.5 bg-amber-400 shadow-xs' : 'w-1 bg-white/70'
                 }`}
                 aria-label={`View image ${idx + 1}`}
               />
@@ -235,55 +244,72 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode = 'g
         )}
 
         {/* Fast Action Quick-Add Overlay */}
-        <div className="absolute inset-x-2 bottom-2 hidden group-hover:flex items-center gap-1.5 z-20">
+        <div className="absolute inset-x-1.5 bottom-1.5 sm:inset-x-2 sm:bottom-2 hidden group-hover:flex items-center gap-1 z-20">
           <button
             onClick={handleAddToCart}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-zinc-900/90 dark:bg-zinc-100/95 hover:bg-zinc-900 dark:hover:bg-white text-white dark:text-zinc-900 text-xs font-semibold shadow-lg backdrop-blur-sm transition-all"
+            className="flex-1 flex items-center justify-center gap-1 py-1 sm:py-1.5 px-1 sm:px-2 rounded-md sm:rounded-lg bg-stone-900/95 dark:bg-amber-500 dark:hover:bg-amber-400 hover:bg-stone-900 text-white dark:text-stone-950 text-[10px] sm:text-[11px] font-bold shadow-md backdrop-blur-sm transition-all active:scale-98 cursor-pointer"
           >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            Quick Add
+            <ShoppingBag className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+            <span className="hidden min-[380px]:inline">Quick Add</span>
           </button>
         </div>
       </div>
 
       {/* Content Body */}
-      <div className="flex-1 flex flex-col p-4">
-        {/* Seller info */}
-        <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 mb-1.5">
-          <span className="flex items-center gap-1 truncate font-medium hover:text-zinc-800 dark:hover:text-zinc-200">
-            {product.sellerName}
-            {product.sellerVerified && (
-              <CheckCircle className="w-3 h-3 text-blue-500 shrink-0" />
-            )}
+      <div className="flex-1 flex flex-col p-1.5 sm:p-3">
+        {/* Category Pill and Seller info */}
+        <div className="flex items-center justify-between text-xs mb-0.5 sm:mb-1 gap-1">
+          <span className={`text-[7.5px] sm:text-[9px] font-semibold px-1 py-0.2 sm:px-1.5 sm:py-0.5 rounded-full border truncate max-w-[46px] min-[400px]:max-w-[70px] sm:max-w-none leading-none ${categoryTheme.badge}`}>
+            {categoryTheme.name}
           </span>
-          <span className="flex items-center gap-0.5 text-zinc-700 dark:text-zinc-300 font-medium">
-            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+          <span className="flex items-center gap-0.5 text-stone-700 dark:text-stone-300 text-[8px] sm:text-[11px] font-bold shrink-0">
+            <Star className="w-2 h-2 sm:w-2.5 sm:h-2.5 fill-amber-400 text-amber-400" />
             {product.rating.toFixed(1)}
           </span>
         </div>
 
         {/* Title */}
-        <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-2 leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+        <h3 className="text-[10px] min-[400px]:text-[11px] sm:text-[13px] font-bold text-stone-900 dark:text-stone-100 line-clamp-1 sm:line-clamp-2 leading-tight sm:leading-snug group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
           {product.title}
         </h3>
 
+        {/* Seller name & location (compact on mobile) */}
+        <div className="hidden min-[440px]:flex items-center justify-between text-[8px] sm:text-[10px] text-stone-500 dark:text-stone-400 mt-1">
+          <span className="flex items-center gap-0.5 truncate font-medium">
+            {product.sellerName}
+            {product.sellerVerified && (
+              <CheckCircle className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-sky-500 shrink-0" />
+            )}
+          </span>
+          <span className="hidden sm:flex items-center gap-0.5 text-stone-400 shrink-0">
+            <MapPin className="w-2.5 h-2.5" />
+            {product.location.split(',')[0]}
+          </span>
+        </div>
+
         {/* Price and Stock Details */}
-        <div className="mt-auto pt-3 flex items-baseline justify-between">
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-              ${product.price.toFixed(2)}
+        <div className="mt-auto pt-1 sm:pt-2 flex items-baseline justify-between border-t border-stone-100 dark:border-stone-800/80 gap-0.5">
+          <div className="flex items-baseline gap-0.5 sm:gap-1">
+            <span className="text-[11px] min-[400px]:text-xs sm:text-[14px] md:text-[15px] font-black text-stone-900 dark:text-stone-50 shrink-0">
+              ${product.price.toFixed(0)}
+              <span className="text-[9px] sm:text-xs font-bold">{((product.price % 1).toFixed(2)).substring(1)}</span>
             </span>
             {hasDiscount && (
-              <span className="text-xs text-zinc-400 line-through">
-                ${product.originalPrice!.toFixed(2)}
+              <span className="hidden min-[480px]:inline text-[8px] sm:text-[10px] text-stone-400 line-through">
+                ${product.originalPrice!.toFixed(0)}
               </span>
             )}
           </div>
 
-          <div className="text-[11px] text-zinc-500 flex items-center gap-1">
-            <MapPin className="w-3 h-3" />
-            <span>{product.location.split(',')[0]}</span>
-          </div>
+          {hasFreeShipping ? (
+            <span className="hidden min-[380px]:inline-block text-[7px] sm:text-[9px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-0.5 sm:px-1 py-0.2 sm:py-0.5 rounded border border-emerald-200/80 dark:border-emerald-800/60 leading-none">
+              Free ship
+            </span>
+          ) : (
+            <span className="hidden min-[420px]:inline-block text-[7px] sm:text-[9px] text-stone-400 font-medium">
+              +{product.shippingOptions[0]?.price ? `$${product.shippingOptions[0].price.toFixed(0)}` : 'ship'}
+            </span>
+          )}
         </div>
       </div>
     </div>
